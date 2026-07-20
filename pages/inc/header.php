@@ -26,7 +26,7 @@ if (!empty($_SESSION['etu'])) {
     <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div class="d-flex align-items-center gap-2">
             <i class="bi bi-cup-hot" style="color: #FBEDD6; font-size: 1.4rem;"></i>
-            <a href="accueil.php" class="site-brand">Ctrl+ Eat</a>
+            <a href="accueil.php" class="site-brand">Ctrl+Eat</a>
         </div>
         
         <nav class="d-flex flex-wrap align-items-center gap-2">
