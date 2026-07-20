@@ -354,8 +354,13 @@ body {
 footer {
     background: linear-gradient(135deg, #4A2511 0%, #654321 100%) !important;
     border-top: none !important;
-    color: #FFE4C4 !important;
+    color: #ffe4c4 !important;
     box-shadow: 0 -4px 20px rgba(74, 37, 17, 0.2);
+}
+
+.text-muted {
+    --bs-text-opacity: 1;
+    color: #ffe4c4 !important;
 }
 
 /* === TYPOGRAPHY === */
