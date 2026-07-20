@@ -27,6 +27,7 @@ $produits = produit_membres($etu);
         <div class="d-flex flex-wrap gap-2">
             <a href="vendre.php" class="btn btn-success">Vendre un produit</a>
             <a href="mes_ventes.php" class="btn btn-info">Mes Ventes</a>
+            <a href="deconnection.php" class="btn btn-danger">Deconnexion</a>
         </div>
     </div>
 

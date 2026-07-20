@@ -22,9 +22,6 @@ if (session_status() === PHP_SESSION_NONE) {
                 <a href="vendre.php" class="btn btn-outline-success btn-sm">Vendre</a>
                 <a href="mes_ventes.php" class="btn btn-outline-info btn-sm">Mes ventes</a>
                 <a href="deconnexion.php" class="btn btn-outline-danger btn-sm">Déconnexion</a>
-            <?php else: ?>
-                <a href="login.php" class="btn btn-outline-primary btn-sm">Connexion</a>
-                <a href="inscription.php" class="btn btn-outline-secondary btn-sm">Inscription</a>
             <?php endif; ?>
         </nav>
     </div>

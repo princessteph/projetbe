@@ -15,7 +15,6 @@ include('../inc/header.php');
                             <input type="text" class="form-control" id="etu" name="etu" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Se connecter</button>
-                        <a href="inscription.php" class="btn btn-outline-secondary ms-2">Créer un compte</a>
                     </form>
                 </div>
             </div>
