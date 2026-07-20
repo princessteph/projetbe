@@ -22,7 +22,7 @@ $produits = get_all_produit();
                             <label for="produit" class="form-label">Produit</label>
                             <select class="form-control" id="produit" name="produit" required>
                                 <?php foreach ($produits as $produit): ?>
-                                    <option value="<?= $produit['id_produit'] ?>"><?= htmlspecialchars($produit['nom']) ?></option>
+                                    <option value="<?= $produit['id_produit'] ?>"><?= $produit['nom'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

@@ -18,7 +18,7 @@ if (isset($_SESSION['message'])) {
 }
 
 $etu = $_SESSION['etu'];
-$produits = produit_membres($etu);
+$produits = produit_membres();
 ?>
 <div class="container">
     <?php if ($message != '') { ?>

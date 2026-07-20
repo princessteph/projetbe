@@ -24,7 +24,7 @@ function get_one_line($sql){
     return $result;
 }
 
-function produit_membres($etu){
+function produit_membres(){
     $sql = "SELECT 
                 produit_membre.id_produit_membre,
                 produit.nom AS nom_produit,
@@ -37,8 +37,7 @@ function produit_membres($etu){
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre
             JOIN produit ON produit_membre.id_produit = produit.id_produit
-            JOIN categorie ON produit.id_categorie = categorie.id_categorie
-            WHERE membre.numero_etu != '$etu'";
+            JOIN categorie ON produit.id_categorie = categorie.id_categorie";
     $result = get_all_lines($sql);
     return $result;
 }
