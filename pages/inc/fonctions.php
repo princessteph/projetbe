@@ -155,48 +155,46 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 }
 
 function image_upload($prefix = 'membre') {
-    ensure_image_columns();
-    $image = 'default.png';
-    $GLOBALS['upload_debug'] = 'ok';
+    $image = ' ';
 
     if (!isset($_FILES['image'])) {
-        $GLOBALS['upload_debug'] = "aucun champ 'image' reçu dans \$_FILES (le formulaire a-t-il enctype=multipart/form-data ?)";
-        return $image;
-    }
-    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-        $GLOBALS['upload_debug'] = "erreur PHP upload, code = " . $_FILES['image']['error'];
-        return $image;
-    }
-    if ($_FILES['image']['size'] <= 0) {
-        $GLOBALS['upload_debug'] = "taille du fichier reçu = 0 (aucun fichier sélectionné ?)";
         return $image;
     }
 
-    $extensions_ok = array('jpg', 'jpeg', 'png', 'gif', 'webp');
-    $nom_fichier = $_FILES['image']['name'];
-    $extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
+    $fichier = $_FILES['image'];
+    $nomFichier = $fichier['name'];
+    $tmpFichier = $fichier['tmp_name'];
+    $erreurFichier = $fichier['error'];
+    $tailleFichier = $fichier['size'];
 
-    if (!in_array($extension, $extensions_ok)) {
-        $GLOBALS['upload_debug'] = "extension refusée = '$extension' (fichier: $nom_fichier)";
+    $extensionFichier = strtolower(pathinfo($nomFichier, PATHINFO_EXTENSION));
+
+    $extensionsAutorisees = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+    $tailleMax = 2 * 1024 * 1024;
+
+    if ($erreurFichier !== 0) {
+        return $image;
+    }
+
+    if (!in_array($extensionFichier, $extensionsAutorisees)) {
+        return $image;
+    }
+
+    if ($tailleFichier > $tailleMax) {
         return $image;
     }
 
     $prefix_name = ($prefix === 'produit') ? 'produit_' : 'membre_';
-    $nouveau_nom = $prefix_name . uniqid('', true) . '.' . $extension;
-    $dossier_destination = dirname(__DIR__) . '/assets/img/' . $nouveau_nom;
+    $nouveauNom = $prefix_name . uniqid('', true) . '.' . $extensionFichier;
 
-    if (!is_dir(dirname($dossier_destination))) {
-        mkdir(dirname($dossier_destination), 0777, true);
-    }
-    if (!is_writable(dirname($dossier_destination))) {
-        $GLOBALS['upload_debug'] = "dossier non writable = " . dirname($dossier_destination);
-        return $image;
+    $dossierDestination = dirname(__DIR__) . '/assets/img/' . $nouveauNom;
+
+    if (!is_dir(dirname($dossierDestination))) {
+        mkdir(dirname($dossierDestination), 0777, true);
     }
 
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier_destination)) {
-        $image = $nouveau_nom;
-    } else {
-        $GLOBALS['upload_debug'] = "move_uploaded_file a échoué vers $dossier_destination (tmp_name: " . $_FILES['image']['tmp_name'] . ")";
+    if (move_uploaded_file($tmpFichier, $dossierDestination)) {
+        $image = $nouveauNom;
     }
 
     return $image;
