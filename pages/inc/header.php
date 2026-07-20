@@ -35,7 +35,7 @@ if (!empty($_SESSION['etu'])) {
                 <a href="vendre.php" class="btn btn-outline-success btn-sm">Vendre</a>
                 <a href="mes_ventes.php" class="btn btn-outline-info btn-sm">Mes ventes</a>
                 <a href="statistiques.php" class="btn btn-outline-secondary btn-sm">Statistiques</a>
-                <a href="ajout_produit.php" class="btn btn-outline-warning btn-sm">Ajouter produit</a>
+                <a href="ajout_produit.php" class="btn btn-outline-dark btn-sm">Ajouter produit</a>
                 <a href="modifier_produit.php" class="btn btn-outline-dark btn-sm">Modifier produit</a>
                 
                 <div class="user-profile ms-2">
