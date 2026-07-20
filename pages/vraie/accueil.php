@@ -32,6 +32,8 @@ $produits = produit_membres($etu);
     <div class="container">
         <div class="accueil d-flex justify-content-between align-items-center my-4">
             <h1>Bienvenue sur la page d'accueil</h1>
+            <a href="vendre.php" class="btn btn-success">Vendre un produit</a>
+            <a href="mes_ventes.php" class="btn btn-info">Mes Ventes</a>
             <a href="deconnexion.php" class="btn btn-danger">Se deconnecter</a>
         </div>
 
