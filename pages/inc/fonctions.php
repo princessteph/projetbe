@@ -25,7 +25,6 @@ function get_one_line($sql){
 }
 
 function produit_membres($etu){
-    ensure_image_columns();
     $sql = "SELECT 
                 produit_membre.id_produit_membre,
                 produit.nom AS nom_produit,
@@ -33,8 +32,7 @@ function produit_membres($etu){
                 membre.nom AS nom_membre,
                 produit_membre.quantite_dispo,
                 produit_membre.date_dispo,
-                COALESCE(produit_membre.image_produit, 'default-food.svg') AS image_produit,
-                COALESCE(membre.image_profil, 'default-profile.svg') AS image_profil,
+                produit_membre.image,
                 categorie.nom_categorie
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre

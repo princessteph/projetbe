@@ -98,3 +98,6 @@ INSERT INTO produit_membre (id_produit, id_membre, prix_vente, quantite_dispo, d
 (12, 8, 600.00, 22, '2026-06-18'),
 (13, 9, 7000.00, 28, '2026-06-19'),
 (14, 10, 3500.00, 14, '2026-06-20');
+
+
+ALTER TABLE produit_membre ADD COLUMN image VARCHAR(255) AFTER date_dispo;
