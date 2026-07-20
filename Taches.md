@@ -29,7 +29,7 @@ traitement_login.php
         -si etu !exixte> ins cription
 
 
-3- inscription.php
+ inscription.php
     a) affichage
         -html
             input de type text
@@ -39,7 +39,7 @@ traitement_login.php
         upload
         fonction inscription
 
-4- accueil.php
+ accueil.php
     a) affichage
         -html
             image produit
@@ -51,7 +51,7 @@ traitement_login.php
         boucle
         fonction qui prend les produits
 
-5- vendre.php
+ vendre.php
     a) affichage
         -html
             select categorie
