@@ -17,7 +17,7 @@ $produits = get_all_produit();
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h1 class="h3 mb-3">Vendre un produit</h1>
-                    <form action="../inc/traitement_vente.php" method="POST">
+                    <form action="../inc/traitement_vente.php" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="produit" class="form-label">Produit</label>
                             <select class="form-control" id="produit" name="produit" required>
@@ -37,6 +37,10 @@ $produits = get_all_produit();
                         <div class="mb-3">
                             <label for="date" class="form-label">Date dispo</label>
                             <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Photo du produit (facultatif)</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
                         </div>
                         <button type="submit" class="btn btn-primary">Vendre</button>
                         <a href="accueil.php" class="btn btn-outline-secondary ms-2">Retour</a>
