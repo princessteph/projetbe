@@ -25,7 +25,7 @@ if (!empty($_SESSION['etu'])) {
 <header class="site-header">
     <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div class="d-flex align-items-center gap-2">
-            <i class="bi-mouse" style="color: #FBEDD6;"></i>
+            <i class="bi bi-cup-hot" style="color: #FBEDD6; font-size: 1.4rem;"></i>
             <a href="accueil.php" class="site-brand">Ctrl+ Eat</a>
         </div>
         
@@ -35,6 +35,8 @@ if (!empty($_SESSION['etu'])) {
                 <a href="vendre.php" class="btn btn-outline-success btn-sm">Vendre</a>
                 <a href="mes_ventes.php" class="btn btn-outline-info btn-sm">Mes ventes</a>
                 <a href="statistiques.php" class="btn btn-outline-secondary btn-sm">Statistiques</a>
+                <a href="ajout_produit.php" class="btn btn-outline-warning btn-sm">Ajouter produit</a>
+                <a href="modifier_produit.php" class="btn btn-outline-dark btn-sm">Modifier produit</a>
                 
                 <div class="user-profile ms-2">
                     <img src="../assets/img/<?php echo !empty($user['image_profil']) ? $user['image_profil'] : 'default.png'; ?>" 
