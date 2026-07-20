@@ -230,62 +230,67 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 }
 
 function image_upload($prefix = 'membre') {
-    $image = 'default.png';
+    $image_par_defaut = ' ';
 
+    // 1. Vérifie si le fichier a été soumis
     if (!isset($_FILES['image'])) {
-        return $image;
+        return $image_par_defaut;
     }
 
-    $fichier = $_FILES['image'];
-    $nomFichier = $fichier['name'];
-    $tmpFichier = $fichier['tmp_name'];
-    $erreurFichier = $fichier['error'];
-    $tailleFichier = $fichier['size'];
+    $file = $_FILES['image'];
 
-    // Pas de fichier choisi (champ facultatif) -> on garde le default proprement
-    if ($erreurFichier === UPLOAD_ERR_NO_FILE) {
-        return $image;
-    }
-    if ($erreurFichier !== UPLOAD_ERR_OK) {
-        return $image;
-    }
-    if ($tailleFichier <= 0) {
-        return $image;
+    // 2. Si aucun fichier n'a été sélectionné (champ laissé vide car facultatif)
+    if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+        return $image_par_defaut;
     }
 
-    $extensionFichier = strtolower(pathinfo($nomFichier, PATHINFO_EXTENSION));
-    $extensionsAutorisees = array('jpg', 'jpeg', 'png', 'gif', 'webp');
-    $tailleMax = 2 * 1024 * 1024;
-
-    if (!in_array($extensionFichier, $extensionsAutorisees)) {
-        return $image;
+    // 3. Vérifie s'il y a une erreur d'upload native
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        echo "Erreur lors de l'upload : " . $file['error'];
+        exit();
     }
 
-    if ($tailleFichier > $tailleMax) {
-        return $image;
+    // 4. Vérifie la taille (2 Mo)
+    $maxSize = 2 * 1024 * 1024; 
+    if ($file['size'] > $maxSize) {
+        echo "Le fichier est trop volumineux (2 Mo maximum).";
+        exit();
     }
 
-    // Vérifie le vrai type MIME (pas juste l'extension, qui peut être trafiquée)
-    $mimesAutorises = array('image/jpeg', 'image/png', 'image/gif', 'image/webp');
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime = finfo_file($finfo, $tmpFichier);
-    finfo_close($finfo);
-    if (!in_array($mime, $mimesAutorises)) {
-        return $image;
+    // 5. Vérifie le type MIME réel avec finfo
+    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        if (!in_array($mime, $allowedMimeTypes)) {
+            echo "Type de fichier non autorisé : " . htmlspecialchars($mime);
+            exit();
+        }
     }
 
-    $prefix_name = ($prefix === 'produit') ? 'produit_' : 'membre_';
-    $nouveauNom = $prefix_name . uniqid('', true) . '.' . $extensionFichier;
+    // 6. Nettoyage et renommage sécurisé du fichier
+    $originalName = pathinfo($file['name'], PATHINFO_FILENAME);
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    
+    // On nettoie le nom pour éviter les caractères bizarres
+    $originalName = preg_replace('/[^a-zA-Z0-9_-]/', '', $originalName);
+    $newName = $prefix . '_' . $originalName . '_' . uniqid() . '.' . $extension;
 
-    $dossierDestination = dirname(__DIR__) . '/assets/img/' . $nouveauNom;
-
-    if (!is_dir(dirname($dossierDestination))) {
-        mkdir(dirname($dossierDestination), 0777, true);
+    // 7. Définition du dossier cible (Le chemin relatif basé sur l'emplacement de fonctions.php)
+    $uploadDir = __DIR__ . '/../assets/img/';
+    
+    // Si le dossier n'existe pas, on le crée
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
     }
 
-    if (move_uploaded_file($tmpFichier, $dossierDestination)) {
-        $image = $nouveauNom;
+    // 8. Déplacement final du fichier
+    if (move_uploaded_file($file['tmp_name'], $uploadDir . $newName)) {
+        return $newName;
+    } else {
+        echo "Échec du déplacement du fichier vers : " . htmlspecialchars($uploadDir);
+        exit();
     }
-
-    return $image;
 }
