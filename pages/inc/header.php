@@ -32,9 +32,9 @@ if (!empty($_SESSION['etu'])) {
         <nav class="d-flex flex-wrap align-items-center gap-2">
             <?php if (!empty($_SESSION['etu'])) { ?>
                 <a href="accueil.php" class="btn btn-outline-primary btn-sm">Accueil</a>
-                <a href="statistiques.php" class="btn btn-outline-primary btn-sm">Statistiques</a>
                 <a href="vendre.php" class="btn btn-outline-success btn-sm">Vendre</a>
                 <a href="mes_ventes.php" class="btn btn-outline-info btn-sm">Mes ventes</a>
+                <a href="statistiques.php" class="btn btn-outline-secondary btn-sm">Statistiques</a>
                 
                 <div class="user-profile ms-2">
                     <img src="../assets/img/<?php echo !empty($user['image_profil']) ? $user['image_profil'] : 'default.png'; ?>" 

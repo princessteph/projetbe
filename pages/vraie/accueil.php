@@ -18,33 +18,14 @@ if (isset($_SESSION['message'])) {
 }
 
 $etu = $_SESSION['etu'];
+
+$id_categorie = isset($_GET['id_categorie']) && $_GET['id_categorie'] !== '' ? (int) $_GET['id_categorie'] : null;
+$id_produit = isset($_GET['id_produit']) && $_GET['id_produit'] !== '' ? (int) $_GET['id_produit'] : null;
+
 $categories = all_categories();
-$produits = produit_membres($etu);
+$produits_filtre = $id_categorie ? get_produit_by_categorie($id_categorie) : get_all_produit();
 
-$filterCategorie = isset($_GET['categorie']) ? (int)$_GET['categorie'] : 0;
-$filterProduit = isset($_GET['produit']) ? $_GET['produit'] : '';
-
-$produitsFiltres = array();
-$produitsNom = array();
-foreach ($produits as $produit) {
-    $produitsNom[$produit['nom_produit']] = $produit['nom_produit'];
-
-    $ok = true;
-
-    if ($filterCategorie > 0 && (int)$produit['id_categorie'] != $filterCategorie) {
-        $ok = false;
-    }
-
-    if ($filterProduit != '' && $produit['nom_produit'] != $filterProduit) {
-        $ok = false;
-    }
-
-    if ($ok) {
-        $produitsFiltres[] = $produit;
-    }
-}
-
-$produits = $produitsFiltres;
+$produits = produit_membres($id_categorie, $id_produit);
 ?>
 <div class="container">
     <?php if ($message != '') { ?>
@@ -54,39 +35,38 @@ $produits = $produitsFiltres;
         </div>
     <?php } ?>
 
-    <div class="produits">
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h2 class="h4 mb-0">Produits à vendre</h2>
-            
-            <a href="ajout_produit.php" class="btn btn-primary btn-sm">Ajouter un produit</a>
-            <a href="modifier_produit.php" class="btn btn-secondary btn-sm">Modifier un produit</a>
+    <form method="GET" class="row g-2 align-items-center mb-4">
+        <div class="col-auto">
+            <select name="id_categorie" class="form-select" onchange="this.form.submit()">
+                <option value="">Toutes les catégories</option>
+                <?php foreach ($categories as $cat) { ?>
+                    <option value="<?php echo $cat['id_categorie']; ?>" <?php echo ($id_categorie == $cat['id_categorie']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($cat['nom_categorie']); ?>
+                    </option>
+                <?php } ?>
+            </select>
         </div>
+        <div class="col-auto">
+            <select name="id_produit" class="form-select" onchange="this.form.submit()">
+                <option value="">Tous les produits</option>
+                <?php foreach ($produits_filtre as $p) { ?>
+                    <option value="<?php echo $p['id_produit']; ?>" <?php echo ($id_produit == $p['id_produit']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($p['nom']); ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+            <?php if ($id_categorie || $id_produit) { ?>
+                <a href="accueil.php" class="btn btn-outline-secondary btn-sm">Réinitialiser</a>
+            <?php } ?>
+        </div>
+    </form>
 
-        <form method="GET" class="row g-2 align-items-end mb-4">
-            <div class="col-md-4">
-                <label for="categorie" class="form-label small">Catégorie</label>
-                <select id="categorie" name="categorie" class="form-select">
-                    <option value="0">Toutes</option>
-                    <?php foreach ($categories as $categorie): ?>
-                        <option value="<?= $categorie['id_categorie'] ?>" <?= $filterCategorie > 0 && $filterCategorie === $categorie['id_categorie'] ? 'selected' : '' ?>><?= $categorie['nom_categorie']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-md-5">
-                <label for="produit" class="form-label small">Produit</label>
-                <select id="produit" name="produit" class="form-select">
-                    <option value="">Tous</option>
-                    <?php foreach ($produitsNom as $nomProduit): ?>
-                        <option value="<?= htmlspecialchars($nomProduit) ?>" <?= $filterProduit != '' && $filterProduit === $nomProduit ? 'selected' : '' ?>><?= htmlspecialchars($nomProduit) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Filtrer</button>
-                <a href="accueil.php" class="btn btn-outline-secondary">Réinitialiser</a>
-            </div>
-        </form>
 
+    <div class="produits">
+        <h2 class="h4">Produits a vendres</h2>
         <?php if (!empty($produits)) { ?>
             <div class="row">
                 <?php foreach ($produits as $produit) { ?>

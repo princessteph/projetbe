@@ -24,22 +24,42 @@ function get_one_line($sql){
     return $result;
 }
 
-function produit_membres(){
+function produit_membres($id_categorie = null, $id_produit = null){
     $sql = "SELECT 
                 produit_membre.id_produit_membre,
+                produit.id_produit,
                 produit.nom AS nom_produit,
                 produit_membre.prix_vente AS prix,
                 membre.nom AS nom_membre,
                 produit_membre.quantite_dispo,
                 produit_membre.date_dispo,
                 produit_membre.image,
+                categorie.id_categorie,
                 categorie.nom_categorie
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre
             JOIN produit ON produit_membre.id_produit = produit.id_produit
             JOIN categorie ON produit.id_categorie = categorie.id_categorie";
+
+    $conditions = array();
+    if (!empty($id_categorie)) {
+        $conditions[] = "categorie.id_categorie = '" . (int) $id_categorie . "'";
+    }
+    if (!empty($id_produit)) {
+        $conditions[] = "produit.id_produit = '" . (int) $id_produit . "'";
+    }
+    if (!empty($conditions)) {
+        $sql .= " WHERE " . implode(' AND ', $conditions);
+    }
+
     $result = get_all_lines($sql);
     return $result;
+}
+
+function get_produit_by_categorie($id_categorie){
+    $id_categorie = (int) $id_categorie;
+    $sql = "SELECT * FROM produit WHERE id_categorie = '$id_categorie' ORDER BY nom";
+    return get_all_lines($sql);
 }
 
 function check($etu){
@@ -109,6 +129,61 @@ function get_all_ventes($etu){
     return get_all_lines($sql); 
 }
 
+// --- Statistiques : ventes par categorie -> par produit -> par membre ---
+
+function stats_par_categorie(){
+    $sql = "SELECT c.id_categorie, c.nom_categorie,
+                COALESCE(SUM(pm.prix_vente * v.quantite), 0) AS total_ventes,
+                COALESCE(SUM(v.quantite), 0) AS quantite_vendue
+            FROM categorie c
+            LEFT JOIN produit p ON p.id_categorie = c.id_categorie
+            LEFT JOIN produit_membre pm ON pm.id_produit = p.id_produit
+            LEFT JOIN vente v ON v.id_produit_membre = pm.id_produit_membre
+            GROUP BY c.id_categorie, c.nom_categorie
+            ORDER BY total_ventes DESC";
+    return get_all_lines($sql);
+}
+
+function stats_par_produit($id_categorie){
+    $id_categorie = (int) $id_categorie;
+    $sql = "SELECT p.id_produit, p.nom,
+                COALESCE(SUM(pm.prix_vente * v.quantite), 0) AS total_ventes,
+                COALESCE(SUM(v.quantite), 0) AS quantite_vendue
+            FROM produit p
+            LEFT JOIN produit_membre pm ON pm.id_produit = p.id_produit
+            LEFT JOIN vente v ON v.id_produit_membre = pm.id_produit_membre
+            WHERE p.id_categorie = '$id_categorie'
+            GROUP BY p.id_produit, p.nom
+            ORDER BY total_ventes DESC";
+    return get_all_lines($sql);
+}
+
+function stats_par_membre($id_produit){
+    $id_produit = (int) $id_produit;
+    $sql = "SELECT m.id_membre, m.nom,
+                COALESCE(SUM(pm.prix_vente * v.quantite), 0) AS total_ventes,
+                COALESCE(SUM(v.quantite), 0) AS quantite_vendue
+            FROM membre m
+            JOIN produit_membre pm ON pm.id_membre = m.id_membre
+            LEFT JOIN vente v ON v.id_produit_membre = pm.id_produit_membre
+            WHERE pm.id_produit = '$id_produit'
+            GROUP BY m.id_membre, m.nom
+            ORDER BY total_ventes DESC";
+    return get_all_lines($sql);
+}
+
+function get_categorie($id_categorie){
+    $id_categorie = (int) $id_categorie;
+    $sql = "SELECT * FROM categorie WHERE id_categorie = '$id_categorie'";
+    return get_one_line($sql);
+}
+
+function get_produit($id_produit){
+    $id_produit = (int) $id_produit;
+    $sql = "SELECT * FROM produit WHERE id_produit = '$id_produit'";
+    return get_one_line($sql);
+}
+
 function get_produit_membre($id_produit_membre) {
     $sql = "SELECT pm.*, p.nom AS nom_produit, m.nom AS nom_membre 
             FROM produit_membre pm
@@ -144,8 +219,8 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 
     $date = date('Y-m-d');
     $heure = date('H:i:s');
-    $sql_vente = "INSERT INTO vente (date, heure, id_produit_membre, quantite) VALUES 
-                    ('$date', '$heure', '$id_produit_membre', '$quantite_achetee')";
+    $sql_vente = "INSERT INTO vente (date, heure, id_produit_membre, quantite) 
+                  VALUES ('$date', '$heure', '$id_produit_membre', '$quantite_achetee')";
 
     if (!mysqli_query($connect, $sql_vente)) {
         return array('type' => 'danger', 'texte' => 'Erreur lors de l enregistrement de la vente.');
@@ -155,7 +230,7 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 }
 
 function image_upload($prefix = 'membre') {
-    $image = ' ';
+    $image = 'default.png';
 
     if (!isset($_FILES['image'])) {
         return $image;
@@ -167,20 +242,35 @@ function image_upload($prefix = 'membre') {
     $erreurFichier = $fichier['error'];
     $tailleFichier = $fichier['size'];
 
-    $extensionFichier = strtolower(pathinfo($nomFichier, PATHINFO_EXTENSION));
-
-    $extensionsAutorisees = array('jpg', 'jpeg', 'png', 'gif', 'webp');
-    $tailleMax = 2 * 1024 * 1024;
-
-    if ($erreurFichier !== 0) {
+    // Pas de fichier choisi (champ facultatif) -> on garde le default proprement
+    if ($erreurFichier === UPLOAD_ERR_NO_FILE) {
         return $image;
     }
+    if ($erreurFichier !== UPLOAD_ERR_OK) {
+        return $image;
+    }
+    if ($tailleFichier <= 0) {
+        return $image;
+    }
+
+    $extensionFichier = strtolower(pathinfo($nomFichier, PATHINFO_EXTENSION));
+    $extensionsAutorisees = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+    $tailleMax = 2 * 1024 * 1024;
 
     if (!in_array($extensionFichier, $extensionsAutorisees)) {
         return $image;
     }
 
     if ($tailleFichier > $tailleMax) {
+        return $image;
+    }
+
+    // Vérifie le vrai type MIME (pas juste l'extension, qui peut être trafiquée)
+    $mimesAutorises = array('image/jpeg', 'image/png', 'image/gif', 'image/webp');
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $tmpFichier);
+    finfo_close($finfo);
+    if (!in_array($mime, $mimesAutorises)) {
         return $image;
     }
 
