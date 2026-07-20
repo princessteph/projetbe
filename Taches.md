@@ -12,7 +12,7 @@
         -15 produits à répartir sur plusieurs catégories
         -20 produits à vendre
 
-[okETU0047224722]login.php
+[okETU004722]login.php
     a) affichage
         -html
             input de type number
@@ -40,7 +40,7 @@
         upload
         fonction inscription
 
-[okETU0047224722] accueil.php
+[okETU004722] accueil.php
     a) affichage
         -html
             image produit
@@ -52,7 +52,7 @@
         boucle
         fonction qui prend les produits
 
-[okETU0047224722] traitement_achat.php
+[okETU004722] traitement_achat.php
     a)affichage
     b)code dynamique
         fonction achat
@@ -74,4 +74,31 @@ b)   fontion vente.
 
 css [ETU004722]
 
+[okETU004680] footer.php && header.php
+    a)affichage
+
+[okETU004680] inc/modifcation.php
+    b)fonction modifier produit
+
+[okETU004680] traitement produits
+    b)fonction ajout produit
+
+[okETU004722] acceuil.php
+    b)filtre
+
+[okETU004722] statistiques.php
+    a)affichage
+    b)fonction de statistique
+
+[okETU004722] ajout_produit
+    a)affichage
+    b)fonction de ajout_produit
+
+[okETU004680] vrai/modification
+    a)affichage
+    b)fonction modification
+
+[okETU004680] modifier_produit.php
+    a)affichage
+    b)fonction modifier_produit
 fonction upload?? 
