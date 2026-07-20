@@ -1,8 +1,8 @@
-<?php 
-include_once 'connect.php';
+<?php
+include_once 'dbconnect.php';
 
 function get_all_lines($sql){
-    $req = mysqli_query(dbconnect(),$sql );
+    $req = mysqli_query(dbconnect(), $sql);
     if (!$req) {
         die('Erreur SQL : ' . mysqli_error(dbconnect()));
     }
@@ -15,8 +15,7 @@ function get_all_lines($sql){
 }
 
 function get_one_line($sql){
-
-    $req = mysqli_query(dbconnect(),$sql );
+    $req = mysqli_query(dbconnect(), $sql);
     if (!$req) {
         die('Erreur SQL : ' . mysqli_error(dbconnect()));
     }
@@ -26,14 +25,23 @@ function get_one_line($sql){
 }
 
 function produit_membres($etu){
-    $sql = "SELECT * FROM produit_membre
-                JOIN membre ON produit_membre.id_membre = membre.id_membre
-                WHERE membre.numero_etu != '$etu'";
+    $sql = "SELECT 
+                produit.nom AS nom_produit,
+                produit_membre.prix_vente AS prix,
+                membre.nom AS nom_membre,
+                produit_membre.quantite_dispo,
+                produit_membre.date_dispo,
+                categorie.nom_categorie
+            FROM produit_membre
+            JOIN membre ON produit_membre.id_membre = membre.id_membre
+            JOIN produit ON produit_membre.id_produit = produit.id_produit
+            JOIN categorie ON produit.id_categorie = categorie.id_categorie
+            WHERE membre.numero_etu != '$etu'";
     $result = get_all_lines($sql);
     return $result;
 }
 
-function check ($etu){
+function check($etu){
     $sql = "SELECT * FROM membre WHERE numero_etu = '$etu'";
     if (get_one_line($sql)) {
         return true;
@@ -42,9 +50,9 @@ function check ($etu){
     }
 }
 
-function inscription ($etu, $name, $image){
+function inscription($etu, $name, $image){
     $sql = "INSERT INTO membre (numero_etu, nom, image_profil) VALUES ('$etu', '$name', '$image')";
-    return mysqli_query(dbconnect(),$sql);
+    return mysqli_query(dbconnect(), $sql);
 }
 
 function all_categories(){
