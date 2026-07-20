@@ -105,3 +105,5 @@ UPDATE produit_membre SET image = 'plat_default.jpg' WHERE id_produit IN (1, 2, 
 UPDATE produit_membre SET image = 'boisson_default.jpg' WHERE id_produit IN (3, 7, 11, 14);
 UPDATE produit_membre SET image = 'snak_default.jpg' WHERE id_produit IN (4, 8, 12, 15);
 UPDATE produit_membre SET image = 'dessert_default.jpg' WHERE id_produit IN (5, 9, 13);
+
+ALTER TABLE produit ADD CULUMN perime BOOLEAN DEFAULT FALSE AFTER prix_reference;

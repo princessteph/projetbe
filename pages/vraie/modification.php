@@ -40,6 +40,10 @@ $categories = all_categories();
                             <label for="prix" class="form-label">Prix de référence</label>
                             <input type="number" class="form-control" id="prix" name="prix" value="<?= $produit['prix_reference']; ?>" step="0.01" required>
                         </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="perime" name="perime" value="1" <?= (!empty($produit['perime']) && $produit['perime'] == 1) ? 'checked' : '' ?>>
+                            <label for="perime" class="form-check-label">Perime</label>
+                        </div>
                         <button type="submit" class="btn btn-primary">Modifier</button>
                     </form>
                 </div>

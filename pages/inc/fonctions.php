@@ -35,7 +35,8 @@ function produit_membres($id_categorie = null, $id_produit = null){
                 produit_membre.date_dispo,
                 produit_membre.image,
                 categorie.id_categorie,
-                categorie.nom_categorie
+                categorie.nom_categorie,
+                produit.perime    
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre
             JOIN produit ON produit_membre.id_produit = produit.id_produit
@@ -293,4 +294,27 @@ function image_upload($prefix = 'membre') {
         echo "Échec du déplacement du fichier vers : " . htmlspecialchars($uploadDir);
         exit();
     }
+}
+
+function ajout_produit($nom, $id_categorie, $prix_reference, $perime = 0) {
+    $connect = dbconnect();
+    $nom = mysqli_real_escape_string($connect, $nom);
+    $id_categorie = (int)$id_categorie;
+    $prix_reference = (float)$prix_reference;
+    $perime = $perime ? 1 : 0;
+    
+    $sql = "INSERT INTO produit (nom, id_categorie, prix_reference, perime) VALUES ('$nom', '$id_categorie', '$prix_reference', '$perime')";
+    return mysqli_query($connect, $sql);
+}
+
+function modifier_produit($id_produit, $nom, $id_categorie, $prix_reference, $perime = 0) {
+    $connect = dbconnect();
+    $id_produit = (int)$id_produit;
+    $nom = mysqli_real_escape_string($connect, $nom);
+    $id_categorie = (int)$id_categorie;
+    $prix_reference = (float)$prix_reference;
+    $perime = $perime ? 1 : 0;
+    
+    $sql = "UPDATE produit SET nom = '$nom', id_categorie = '$id_categorie', prix_reference = '$prix_reference', perime = '$perime' WHERE id_produit = '$id_produit'";
+    return mysqli_query($connect, $sql);
 }

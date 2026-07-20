@@ -1,7 +1,22 @@
 <?php
-
 include('fonctions.php');
+session_start();
 
-modifier_produit($_POST['id_produit'], $_POST['nom'], $_POST['categorie'], $_POST['prix'], isset($_POST['perime']) ? 1 : 0);
+if (!isset($_SESSION['etu'])) {
+    header('Location: ../vraie/login.php');
+    exit();
+}
 
+if (!isset($_POST['id_produit'], $_POST['nom'], $_POST['categorie'], $_POST['prix'])) {
+    $_SESSION['message'] = array('type' => 'warning', 'texte' => 'Verifiez les champs du formulaire.');
+    header('Location: ../vraie/modifier_produit.php');
+    exit();
+}
+
+$perime = isset($_POST['perime']) ? 1 : 0; 
+
+modifier_produit($_POST['id_produit'], $_POST['nom'], $_POST['categorie'], $_POST['prix'], $perime);
+
+$_SESSION['message'] = array('type' => 'success', 'texte' => 'Produit modifie avec succes.');
 header('Location: ../vraie/accueil.php');
+exit();

@@ -26,7 +26,7 @@ $categories = all_categories();
                             <input type="text" class="form-control" id="nom" name="nom" required>
                         </div>
                         <div class="mb-3">
-                            <label for="categorie" class="form-label">Catégorie</label>
+                            <label for="categorie" class="form-label">Categorie</label>
                             <select class="form-control" id="categorie" name="categorie" required>
                                 <?php foreach ($categories as $categorie): ?>
                                     <option value="<?= $categorie['id_categorie'] ?>"><?= htmlspecialchars($categorie['nom_categorie']) ?></option>
@@ -34,12 +34,12 @@ $categories = all_categories();
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="price" class="form-label">Prix de référence</label>
+                            <label for="price" class="form-label">Prix de reference</label>
                             <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
                         </div>
-                        <div>
-                            <label for="perime" class="form-label">Périmée</label>
-                            <input type="checkbox" class="form-check-input" id="perime" name="perime">
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="perime" name="perime" value="1">
+                            <label for="perime" class="form-check-label">Perime</label>
                         </div>
                         <button type="submit" class="btn btn-primary">Ajouter</button>
                     </form>

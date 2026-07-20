@@ -77,8 +77,11 @@ $produits = produit_membres($id_categorie, $id_produit);
                                 $imageProduit = !empty($produit['image']) ? $produit['image'] : 'default.png';
                                 $imageProduitChemin = '../assets/img/' . $imageProduit;
                                 ?>
-                                <div class="product-image-wrapper mb-3">
-                                    <img src="<?php echo $imageProduitChemin; ?>?v=2" alt="<?php echo $produit['nom_produit']; ?>" class="product-image">
+                                <div class="product-image-wrapper mb-3" style="position: relative;">
+                                    <?php if (!empty($produit['perime']) && $produit['perime'] == 1) { ?>
+                                        <span style="position: absolute; top: 12px; left: 12px; background: linear-gradient(135deg, #CD5C5C 0%, #A0522D 100%); color: #FFF8F0; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; z-index: 10; box-shadow: 0 4px 12px rgba(160,82,45,0.4); letter-spacing: 0.5px;">PERIME</span>
+                                    <?php } ?>
+                                    <img src="<?php echo $imageProduitChemin; ?>" alt="<?php echo $produit['nom_produit']; ?>" class="product-image">
                                 </div>
                                 <h5 class="card-title"><?php echo $produit['nom_produit']; ?></h5>
                                 <p class="card-text">
@@ -86,7 +89,7 @@ $produits = produit_membres($id_categorie, $id_produit);
                                     <strong>Prix unitaire:</strong> <?php echo number_format($produit['prix'], 2); ?> MGA<br>
                                     <strong>Quantite disponible:</strong> <span class="badge bg-success"><?php echo $produit['quantite_dispo']; ?></span><br>
                                     <strong>Date de disponibilite:</strong> <?php echo $produit['date_dispo']; ?><br>
-                                    <strong>Vendeur:</strong> <?php echo $produit['nom_membre']; ?>
+                                    <strong>Vendeur:</strong> <?php echo $produit['nom_membre']; ?><br>
                                 </p>
 
                                 <form action="../inc/traitement_achat.php" method="POST" class="d-flex gap-2">

@@ -8,13 +8,15 @@ if (!isset($_SESSION['etu'])) {
 }
 
 if (!isset($_POST['nom'], $_POST['categorie'], $_POST['price'])) {
-    $_SESSION['message'] = array('type' => 'warning', 'texte' => 'Vérifiez les champs du formulaire.');
+    $_SESSION['message'] = array('type' => 'warning', 'texte' => 'Verifiez les champs du formulaire.');
     header('Location: ../vraie/ajout_produit.php');
     exit();
 }
 
-ajout_produit($_POST['nom'], $_POST['categorie'], $_POST['price']);
+$perime = isset($_POST['perime']) ? 1 : 0; 
 
-$_SESSION['message'] = array('type' => 'success', 'texte' => 'Produit ajouté avec succès.');
+ajout_produit($_POST['nom'], $_POST['categorie'], $_POST['price'], $perime); 
+
+$_SESSION['message'] = array('type' => 'success', 'texte' => 'Produit ajoute avec succes.');
 header('Location: ../vraie/accueil.php');
 exit();
