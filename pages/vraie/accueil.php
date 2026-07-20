@@ -15,8 +15,8 @@ if (isset($_SESSION['message'])) {
     $type = $_SESSION['message']['type'];
     $message = $_SESSION['message']['texte'];
     unset($_SESSION['message']);
-}
-
+    
+    }
 $etu = $_SESSION['etu'];
 
 $id_categorie = isset($_GET['id_categorie']) && $_GET['id_categorie'] !== '' ? (int) $_GET['id_categorie'] : null;
@@ -70,7 +70,7 @@ $produits = produit_membres($id_categorie, $id_produit);
         <?php if (!empty($produits)) { ?>
             <div class="row">
                 <?php foreach ($produits as $produit) { ?>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <?php
