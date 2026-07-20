@@ -1,7 +1,7 @@
 <?php
 
 include('fonctions.php');
-$categories = all_categories();
+$produits = get_all_produit();
 
 ?>
 <!DOCTYPE html>
@@ -19,14 +19,10 @@ $categories = all_categories();
             <h1>Vendre un produit</h1>
             <form action="../inc/traitement_vente.php" method="POST">
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nom du produit</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="category" class="form-label">Catégorie</label>
-                    <select class="form-control" id="category" name="category" required>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['id_categorie'] ?>"><?= $category['nom_categorie'] ?></option>
+                    <label for="produit" class="form-label">Produit</label>
+                    <select class="form-control" id="produit" name="produit" required>
+                        <?php foreach ($produits as $produit): ?>
+                            <option value="<?= $produit['id_produit'] ?>"><?= $produit['nom'] ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
