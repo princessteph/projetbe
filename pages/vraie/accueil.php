@@ -19,12 +19,8 @@ if (isset($_SESSION['message'])) {
 
 $etu = $_SESSION['etu'];
 $produits = produit_membres($etu);
-?>
+    ?>
 <div class="container">
-    <div class="d-flex flex-wrap justify-content-between align-items-center my-4 gap-2">
-        <h1 class="h3 mb-0">Bienvenue sur la page d'accueil</h1>
-    </div>
-
     <?php if ($message != '') { ?>
         <div class="alert alert-<?php echo $type; ?> alert-dismissible fade show" role="alert">
             <?php echo $message; ?>
@@ -33,7 +29,7 @@ $produits = produit_membres($etu);
     <?php } ?>
 
     <div class="produits">
-        <h2 class="h4">Produits des autres membres</h2>
+        <h2 class="h4">Produits a vendres</h2>
         <?php if (!empty($produits)) { ?>
             <div class="row">
                 <?php foreach ($produits as $produit) { ?>

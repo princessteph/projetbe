@@ -2,7 +2,7 @@
 
 <footer class="border-top py-3 mt-5 bg-light">
     <div class="container text-muted small">
-        Projet BE - Gestion des produits et ventes
+        Ctrl+Eat
     </div>
 </footer>
 
