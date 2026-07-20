@@ -25,6 +25,14 @@ function get_one_line($sql){
     return $result;
 }
 
+function produit_membres($etu){
+    $sql = "SELECT * FROM produit_membre
+                JOIN membre ON produit_membre.id_membre = membre.id_membre
+                WHERE membre.numero_etu != '$etu'";
+    $result = get_all_lines($sql);
+    return $result;
+}
+
 function check ($etu){
     $sql = "SELECT * FROM membre WHERE numero_etu = '$etu'";
     if (get_one_line($sql)) {
