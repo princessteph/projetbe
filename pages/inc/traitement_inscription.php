@@ -15,6 +15,6 @@ if (check($etu)) {
     exit();
 }
 
-inscription($etu, $name, 'default.png');
+inscription($etu, $name, image_upload());
 header('Location: ../vraie/accueil.php');
 exit();

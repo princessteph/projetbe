@@ -20,7 +20,16 @@ if (isset($_SESSION['message'])) {
 $etu = $_SESSION['etu'];
 $produits = produit_membres($etu);
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstrap/font/bootstrap-icons.css">
+    <title>Accueil</title>
+</head>
+<body>
 <div class="container">
     <div class="d-flex flex-wrap justify-content-between align-items-center my-4 gap-2">
         <h1 class="h3 mb-0">Bienvenue sur la page d'accueil</h1>
