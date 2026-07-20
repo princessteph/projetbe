@@ -62,24 +62,31 @@ function all_categories(){
 }
 
 function get_all_produit(){
-    $sql = "SELECT * FROM produits";
+    $sql = "SELECT * FROM produit";
     return get_all_lines($sql);
 }
 
 function vente ($etu, $produit, $price, $quantite, $date_dispo){
     $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo) 
-            VALUES ((SELECT id_membre FROM membre WHERE numero_etu = '$etu'), (SELECT id_produit FROM produits WHERE id_produit = '$produit'), '$price', '$quantite', '$date_dispo')";
+            VALUES ((SELECT id_membre FROM membre WHERE numero_etu = '$etu'), (SELECT id_produit FROM produit WHERE id_produit = '$produit'), '$price', '$quantite', '$date_dispo')";
     return mysqli_query(dbconnect(),$sql);
 }
 
 function total_ventes($etu){
-    $sql = "SELECT SUM(prix_vente * quantite) AS total FROM produit_membre JOIN vente ON produit_membre.id_produit_membre = vente.id_produit_membre WHERE id_membre = (SELECT id_membre FROM membre WHERE numero_etu = '$etu') AND id_produit_membre IN (SELECT id_produit_membre FROM vente)";
+    $sql = "SELECT SUM(pm.prix_vente * v.quantite) AS total
+            FROM produit_membre pm
+            JOIN vente v ON pm.id_produit_membre = v.id_produit_membre
+            WHERE pm.id_membre = (SELECT id_membre FROM membre WHERE numero_etu = '$etu')";
     $result = get_one_line($sql);
     return $result['total'] ?? 0;
 }
 
 function get_all_ventes($etu){
-    $sql = "SELECT produit_membre.nom AS nom, produit_membre.prix_vente AS prix, produit_membre.quantite_dispo AS quantite, produit_membre.date_dispo AS date FROM produit_membre JOIN vente ON produit_membre.id_produit_membre = vente.id_produit_membre WHERE id_membre = (SELECT id_membre FROM membre WHERE numero_etu = '$etu') AND id_produit_membre IN (SELECT id_produit_membre FROM vente)";
+    $sql = "SELECT p.nom AS nom, pm.prix_vente AS prix, v.quantite, pm.date_dispo AS date
+            FROM produit_membre pm
+            JOIN vente v ON pm.id_produit_membre = v.id_produit_membre
+            JOIN produit p ON pm.id_produit = p.id_produit
+            WHERE pm.id_membre = (SELECT id_membre FROM membre WHERE numero_etu = '$etu')";
     return get_all_lines($sql); 
 }
 

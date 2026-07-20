@@ -1,47 +1,52 @@
 <?php
-
+$pageTitle = 'Mes ventes';
 include('../inc/fonctions.php');
+include('../inc/header.php');
+
+if (!isset($_SESSION['etu'])) {
+    header('Location: login.php');
+    exit();
+}
+
 $total = total_ventes($_SESSION['etu']);
 $ventes = get_all_ventes($_SESSION['etu']);
-
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bootstrap/font/bootstrap-icons.css">
-    <title>Mes ventes</title>
-</head>
-<body>
-    <div class="container">
-        <div class="login">
-            <h1>Mes ventes</h1>
-            <p>Total des ventes : <?= $total ?> €</p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Produit</th>
-                        <th scope="col">Prix</th>
-                        <th scope="col">Quantité</th>
-                        <th scope="col">Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($ventes as $vente): ?>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h1 class="h3 mb-0">Mes ventes</h1>
+        <a href="accueil.php" class="btn btn-outline-secondary">Retour à l'accueil</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="fw-bold mb-3">Total des ventes : <?= number_format((float)$total, 2, ',', ' ') ?> MGA</p>
+            <?php if (!empty($ventes)) { ?>
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td><?= $vente['nom'] ?></td>
-                            <td><?= $vente['prix'] ?> €</td>
-                            <td><?= $vente['quantite'] ?></td>
-                            <td><?= $vente['date'] ?></td>
+                            <th scope="col">Produit</th>
+                            <th scope="col">Prix</th>
+                            <th scope="col">Quantité</th>
+                            <th scope="col">Date</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>    
+                    </thead>
+                    <tbody>
+                        <?php foreach ($ventes as $vente): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($vente['nom']) ?></td>
+                                <td><?= number_format((float)$vente['prix'], 2, ',', ' ') ?> MGA</td>
+                                <td><?= htmlspecialchars($vente['quantite']) ?></td>
+                                <td><?= htmlspecialchars($vente['date']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php } else { ?>
+                <p class="text-muted">Aucune vente enregistrée pour le moment.</p>
+            <?php } ?>
         </div>
     </div>
-    <a href="accueil.php">Revenir a l'accueil</a>
-</body>
-</html>
+</div>
+
+<?php include('../inc/footer.php'); ?>
