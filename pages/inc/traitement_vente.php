@@ -13,7 +13,7 @@ if (!isset($_POST['produit'], $_POST['price'], $_POST['quantite'], $_POST['date'
     exit();
 }
 
-vente($_SESSION['etu'], $_POST['produit'], $_POST['price'], $_POST['quantite'], $_POST['date']);
+vente($_SESSION['etu'], $_POST['produit'], $_POST['price'], $_POST['quantite'], $_POST['date'], image_upload('produit'));
 
 $_SESSION['message'] = array('type' => 'success', 'texte' => 'Produit mis en vente avec succès.');
 header('Location: ../vraie/accueil.php');

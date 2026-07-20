@@ -36,6 +36,16 @@ $produits = produit_membres($etu);
                     <div class="col-md-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
+                                <?php
+                                $imageProduit = !empty($produit['image_produit']) ? $produit['image_produit'] : 'default-food.svg';
+                                $imageProduitChemin = '../assets/img/' . $imageProduit;
+                                if (!file_exists($imageProduitChemin) || $imageProduit === 'default-profile.svg' || $imageProduit === 'default.png') {
+                                    $imageProduit = 'default-food.svg';
+                                }
+                                ?>
+                                <div class="product-image-wrapper mb-3">
+                                    <img src="../assets/img/default-food.svg?v=food-2" alt="Image du produit" class="product-image" onerror="this.style.display='none'; this.parentNode.classList.add('product-image-fallback');">
+                                </div>
                                 <h5 class="card-title"><?php echo htmlspecialchars($produit['nom_produit']); ?></h5>
                                 <p class="card-text">
                                     <strong>Catégorie:</strong> <?php echo htmlspecialchars($produit['nom_categorie']); ?><br>

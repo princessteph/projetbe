@@ -25,6 +25,7 @@ function get_one_line($sql){
 }
 
 function produit_membres($etu){
+    ensure_image_columns();
     $sql = "SELECT 
                 produit_membre.id_produit_membre,
                 produit.nom AS nom_produit,
@@ -32,6 +33,8 @@ function produit_membres($etu){
                 membre.nom AS nom_membre,
                 produit_membre.quantite_dispo,
                 produit_membre.date_dispo,
+                COALESCE(produit_membre.image_produit, 'default-food.svg') AS image_produit,
+                COALESCE(membre.image_profil, 'default-profile.svg') AS image_profil,
                 categorie.nom_categorie
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre
@@ -51,9 +54,20 @@ function check($etu){
     }
 }
 
+function ensure_image_columns(){
+    $connect = dbconnect();
+    mysqli_query($connect, "ALTER TABLE membre ADD COLUMN IF NOT EXISTS image_profil VARCHAR(255) DEFAULT 'default.png'");
+    mysqli_query($connect, "ALTER TABLE produit_membre ADD COLUMN IF NOT EXISTS image_produit VARCHAR(255) DEFAULT 'default.png'");
+}
+
 function inscription($etu, $name, $image){
+    ensure_image_columns();
+    $connect = dbconnect();
+    $etu = mysqli_real_escape_string($connect, $etu);
+    $name = mysqli_real_escape_string($connect, $name);
+    $image = mysqli_real_escape_string($connect, $image);
     $sql = "INSERT INTO membre (numero_etu, nom, image_profil) VALUES ('$etu', '$name', '$image')";
-    return mysqli_query(dbconnect(), $sql);
+    return mysqli_query($connect, $sql);
 }
 
 function all_categories(){
@@ -66,10 +80,18 @@ function get_all_produit(){
     return get_all_lines($sql);
 }
 
-function vente ($etu, $produit, $price, $quantite, $date_dispo){
-    $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo) 
-            VALUES ((SELECT id_membre FROM membre WHERE numero_etu = '$etu'), (SELECT id_produit FROM produit WHERE id_produit = '$produit'), '$price', '$quantite', '$date_dispo')";
-    return mysqli_query(dbconnect(),$sql);
+function vente ($etu, $produit, $price, $quantite, $date_dispo, $image = 'default.png'){
+    ensure_image_columns();
+    $connect = dbconnect();
+    $etu = mysqli_real_escape_string($connect, $etu);
+    $produit = mysqli_real_escape_string($connect, $produit);
+    $price = mysqli_real_escape_string($connect, $price);
+    $quantite = mysqli_real_escape_string($connect, $quantite);
+    $date_dispo = mysqli_real_escape_string($connect, $date_dispo);
+    $image = mysqli_real_escape_string($connect, $image);
+    $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo, image_produit) 
+            VALUES ((SELECT id_membre FROM membre WHERE numero_etu = '$etu'), (SELECT id_produit FROM produit WHERE id_produit = '$produit'), '$price', '$quantite', '$date_dispo', '$image')";
+    return mysqli_query($connect, $sql);
 }
 
 function total_ventes($etu){
@@ -135,17 +157,23 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
     return array('type' => 'success', 'texte' => 'Achat reussi !');
 }
 
-function image_upload() {
+function image_upload($prefix = 'membre') {
+    ensure_image_columns();
     $image = 'default.png';
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0 && $_FILES['image']['size'] > 0) {
-        $extensions_ok = array('jpg', 'jpeg', 'png', 'gif');
+        $extensions_ok = array('jpg', 'jpeg', 'png', 'gif', 'webp');
         $nom_fichier = $_FILES['image']['name'];
         $extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
 
         if (in_array($extension, $extensions_ok)) {
-            $nouveau_nom = uniqid('membre_') . '.' . $extension;
-            $dossier_destination = '../assets/img/' . $nouveau_nom;
+            $prefix_name = ($prefix === 'produit') ? 'produit_' : 'membre_';
+            $nouveau_nom = $prefix_name . uniqid('', true) . '.' . $extension;
+            $dossier_destination = dirname(__DIR__) . '/assets/img/' . $nouveau_nom;
+
+            if (!is_dir(dirname($dossier_destination))) {
+                mkdir(dirname($dossier_destination), 0777, true);
+            }
 
             if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier_destination)) {
                 $image = $nouveau_nom;
