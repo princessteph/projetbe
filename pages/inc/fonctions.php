@@ -62,7 +62,7 @@ function all_categories(){
 }
 
 function get_all_produit(){
-    $sql = "SELECT * FROM produits";
+    $sql = "SELECT * FROM produit";
     return get_all_lines($sql);
 }
 
@@ -126,4 +126,25 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
     }
 
     return array('type' => 'success', 'texte' => 'Achat reussi !');
+}
+
+function image_upload() {
+    $image = 'default.png';
+
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0 && $_FILES['image']['size'] > 0) {
+        $extensions_ok = array('jpg', 'jpeg', 'png', 'gif');
+        $nom_fichier = $_FILES['image']['name'];
+        $extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
+
+        if (in_array($extension, $extensions_ok)) {
+            $nouveau_nom = uniqid('membre_') . '.' . $extension;
+            $dossier_destination = '../assets/img/' . $nouveau_nom;
+
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier_destination)) {
+                $image = $nouveau_nom;
+            }
+        }
+    }
+
+    return $image;
 }

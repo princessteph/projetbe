@@ -11,10 +11,14 @@
     <div class="container">
         <div class="login">
             <h1>Inscrivez-vous</h1>
-            <form action="../inc/traitement_inscription.php" method="POST">
+            <form action="../inc/traitement_inscription.php" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="name" class="form-label">Nom</label>
                     <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Photo de profil (optionnel)</label>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
                 </div>
                 <button type="submit" class="btn btn-primary">S'inscrire</button>
             </form>

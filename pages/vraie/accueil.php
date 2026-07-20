@@ -32,7 +32,11 @@ $produits = produit_membres($etu);
     <div class="container">
         <div class="accueil d-flex justify-content-between align-items-center my-4">
             <h1>Bienvenue sur la page d'accueil</h1>
-            <a href="deconnexion.php" class="btn btn-danger">Se deconnecter</a>
+            <div class="d-flex gap-2">
+                <a href="vendre.php" class="btn btn-success">Vendre</a>
+                <a href="mes_ventes.php" class="btn btn-secondary">Mes ventes</a>
+                <a href="deconnexion.php" class="btn btn-danger">Se deconnecter</a>
+            </div>
         </div>
 
         <?php if ($message != '') { ?>
