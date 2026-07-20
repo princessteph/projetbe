@@ -1,16 +1,16 @@
- CREATE DATABASE exam;
+CREATE DATABASE IF NOT EXISTS exam;
 
- use exam;
+USE exam;
 
 CREATE TABLE membre (
     id_membre INT PRIMARY KEY AUTO_INCREMENT,
-    nom VARCHAR(255) ,
+    nom VARCHAR(255),
     numero_etu INT UNIQUE,
     image_profil VARCHAR(255)
 );
 
-CREATE TABLE categorie( 
-    id_categorie INT PRIMARY KEY AUTO_INCREMENT, 
+CREATE TABLE categorie (
+    id_categorie INT PRIMARY KEY AUTO_INCREMENT,
     nom_categorie VARCHAR(255)
 );
 
@@ -43,18 +43,18 @@ CREATE TABLE vente (
 );
 
 INSERT INTO membre (nom, numero_etu) VALUES 
-('Ralay', '2664'),
-('Bob', '1020'),
-('Charlie', '4767'),
-('Davy', '1234'),
-('Ezy', '5678')
-('Fay', '9101'),
-('Gina', '1121'),
-('Hank', '3141'),
-('Ivy', '5161'),
-('Jack', '7181');
+('Ralay', 2664),
+('Bob', 1020),
+('Charlie', 4767),
+('Davy', 1234),
+('Ezy', 5678),
+('Fay', 9101),
+('Gina', 1121),
+('Hank', 3141),
+('Ivy', 5161),
+('Jack', 7181);
 
-insert INTO categorie (nom_categorie) VALUES 
+INSERT INTO categorie (nom_categorie) VALUES 
 ('plat'),
 ('boisson'),
 ('snack'),
@@ -69,7 +69,7 @@ INSERT INTO produit (nom, id_categorie, prix_reference) VALUES
 ('Carbonara', 1, 17000.00),
 ('Water', 2, 3000.50),
 ('Candy', 3, 500.00),
-('Cake', 4, 6000.00), 
+('Cake', 4, 6000.00),
 ('Sedap', 1, 3000.00),
 ('Juice', 2, 100.00),
 ('Popcorn', 3, 500.00),
@@ -92,7 +92,7 @@ INSERT INTO produit_membre (id_produit, id_membre, prix_vente, quantite_dispo, d
 (12, 2, 150.00, 19, '2026-06-12'),
 (13, 3, 550.00, 21, '2026-06-13'),
 (14, 4, 5000.00, 24, '2026-06-14'),
-(15, 5, 2200.00, 26, '2026-06-15')
+(15, 5, 2200.00, 26, '2026-06-15'),
 (10, 6, 3000.00, 20, '2026-06-16'),
 (11, 7, 400.00, 18, '2026-06-17'),
 (12, 8, 600.00, 22, '2026-06-18'),
