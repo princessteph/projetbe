@@ -78,7 +78,7 @@ $produits = produit_membres($id_categorie, $id_produit);
                                 $imageProduitChemin = '../assets/img/' . $imageProduit;
                                 ?>
                                 <div class="product-image-wrapper mb-3">
-                                    <img src="<?php echo $imageProduitChemin; ?>" alt="<?php echo $produit['nom_produit']; ?>" class="product-image">
+                                    <img src="<?php echo $imageProduitChemin; ?>?v=2" alt="<?php echo $produit['nom_produit']; ?>" class="product-image">
                                 </div>
                                 <h5 class="card-title"><?php echo $produit['nom_produit']; ?></h5>
                                 <p class="card-text">
