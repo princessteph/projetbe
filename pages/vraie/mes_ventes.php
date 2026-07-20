@@ -33,10 +33,10 @@ $ventes = get_all_ventes($_SESSION['etu']);
                     <tbody>
                         <?php foreach ($ventes as $vente): ?>
                             <tr>
-                                <td><?= htmlspecialchars($vente['nom']) ?></td>
-                                <td><?= number_format((float)$vente['prix'], 2, ',', ' ') ?> MGA</td>
-                                <td><?= htmlspecialchars($vente['quantite']) ?></td>
-                                <td><?= htmlspecialchars($vente['date']) ?></td>
+                                <td><?= $vente['nom'] ?></td>
+                                <td><?= $vente['prix']?> MGA</td>
+                                <td><?= $vente['quantite'] ?></td>
+                                <td><?= $vente['date'] ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
