@@ -21,7 +21,7 @@
     b) code dynamique
         fonction verification
 
-traitement_login.php
+[ok ETU004680]traitement_login.php
     a)fonction 
         -verifie etu
     b)code dynamique
@@ -29,7 +29,7 @@ traitement_login.php
         -si etu !exixte> ins cription
 
 
- inscription.php
+[ok ETU004680] inscription.php
     a) affichage
         -html
             input de type text
@@ -39,7 +39,7 @@ traitement_login.php
         upload
         fonction inscription
 
- accueil.php
+[ok ETU0047224722] accueil.php
     a) affichage
         -html
             image produit
@@ -51,7 +51,13 @@ traitement_login.php
         boucle
         fonction qui prend les produits
 
- vendre.php
+traitement_achat.php
+    a)affichage
+    b)code dynamique
+        fonction achat
+        fonction get produit
+
+[ok ETU004680] vendre.php
     a) affichage
         -html
             select categorie
