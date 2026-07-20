@@ -81,3 +81,48 @@ function get_all_ventes($etu){
     $sql = "SELECT produit_membre.nom AS nom, produit_membre.prix_vente AS prix, produit_membre.quantite_dispo AS quantite, produit_membre.date_dispo AS date FROM produit_membre JOIN vente ON produit_membre.id_produit_membre = vente.id_produit_membre WHERE id_membre = (SELECT id_membre FROM membre WHERE numero_etu = '$etu') AND id_produit_membre IN (SELECT id_produit_membre FROM vente)";
     return get_all_lines($sql); 
 }
+
+function get_produit_membre($id_produit_membre) {
+    $sql = "SELECT pm.*, p.nom AS nom_produit, m.nom AS nom_membre 
+            FROM produit_membre pm
+            JOIN produit p ON pm.id_produit = p.id_produit
+            JOIN membre m ON pm.id_membre = m.id_membre
+            WHERE pm.id_produit_membre = '$id_produit_membre'";
+    return get_one_line($sql);
+}
+
+function acheter_produit($id_produit_membre, $quantite_achetee) {
+    $connect = dbconnect();
+    
+    $produit = get_produit_membre($id_produit_membre);
+    
+    if (!$produit) {
+        return ['success' => false, 'message' => 'Produit introuvable'];
+    }
+    
+    if ($produit['quantite_dispo'] < $quantite_achetee) {
+        return ['success' => false, 'message' => 'Quantite insuffisante. Disponible : ' . $produit['quantite_dispo']];
+    }
+    
+    if ($quantite_achetee <= 0) {
+        return ['success' => false, 'message' => 'Quantite invalide'];
+    }
+    
+    $nouvelle_quantite = $produit['quantite_dispo'] - $quantite_achetee;
+    $sql_update = "UPDATE produit_membre SET quantite_dispo = '$nouvelle_quantite' WHERE id_produit_membre = '$id_produit_membre'";
+    
+    if (!mysqli_query($connect, $sql_update)) {
+        return ['success' => false, 'message' => 'Erreur lors de la mise a jour'];
+    }
+    
+    $date = date('Y-m-d');
+    $heure = date('H:i:s');
+    $sql_vente = "INSERT INTO vente (date, heure, id_produit_membre, quantite) 
+                  VALUES ('$date', '$heure', '$id_produit_membre', '$quantite_achetee')";
+    
+    if (!mysqli_query($connect, $sql_vente)) {
+        return ['success' => false, 'message' => 'Erreur lors de l\'enregistrement de la vente'];
+    }
+    
+    return ['success' => true, 'message' => 'Achat reussi !'];
+}

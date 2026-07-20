@@ -7,6 +7,36 @@ if (!isset($_SESSION['etu'])) {
     exit();
 }
 
+$message = '';
+$type = 'info';
+
+if (isset($_GET['msg'])) {
+    switch ($_GET['msg']) {
+        case 'achat_ok':
+            $message = 'Achat reussi !';
+            $type = 'success';
+            break;
+        case 'stock_insuffisant':
+            $message = 'Stock insuffisant !';
+            $type = 'danger';
+            break;
+        case 'erreur_parametres':
+            $message = 'Erreur de parametres.';
+            $type = 'warning';
+            break;
+        case 'produit_introuvable':
+            $message = 'Produit introuvable.';
+            $type = 'danger';
+            break;
+        case 'quantite_invalide':
+            $message = 'Quantite invalide.';
+            $type = 'warning';
+            break;
+        default:
+            $message = '';
+    }
+}
+
 $etu = $_SESSION['etu'];
 $produits = produit_membres($etu);
 ?>
@@ -21,30 +51,57 @@ $produits = produit_membres($etu);
 </head>
 <body>
     <div class="container">
-        <div class="accueil">
+        <div class="accueil d-flex justify-content-between align-items-center my-4">
             <h1>Bienvenue sur la page d'accueil</h1>
             <a href="deconnexion.php" class="btn btn-danger">Se deconnecter</a>
         </div>
 
+        <?php if ($message){ ?>
+            <div class="alert alert-<?php echo $type; ?> alert-dismissible fade show" role="alert">
+                <?php echo $message; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php } ?>
+
         <div class="produits">
             <h2>Produits des autres membres</h2>
-            <?php if (!empty($produits)): ?>
-                <ul class="list-group">
-                    <?php foreach ($produits as $produit): ?>
-                        <li class="list-group-item">
-                            <strong>Nom du produit:</strong> <?php echo $produit['nom_produit']; ?><br>
-                            <strong>Categorie:</strong> <?php echo $produit['nom_categorie']; ?><br>
-                            <strong>Prix:</strong> <?php echo number_format($produit['prix'], 2); ?> MGA<br>
-                            <strong>Quantite disponible:</strong> <?php echo $produit['quantite_dispo']; ?><br>
-                            <strong>Date de disponibilite:</strong> <?php echo $produit['date_dispo']; ?><br>
-                            <strong>Propose par:</strong> <?php echo $produit['nom_membre']; ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
+            <?php if (!empty($produits)){ ?>
+                <div class="row">
+                    <?php foreach ($produits as $produit){ ?>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo $produit['nom_produit']; ?></h5>
+                                    <p class="card-text">
+                                        <strong>Categorie:</strong> <?php echo $produit['nom_categorie']; ?><br>
+                                        <strong>Prix unitaire:</strong> <?php echo number_format($produit['prix'], 2); ?> MGA<br>
+                                        <strong>Quantite disponible:</strong> <span class="badge bg-success"><?php echo $produit['quantite_dispo']; ?></span><br>
+                                        <strong>Date de disponibilite:</strong> <?php echo $produit['date_dispo']; ?><br>
+                                        <strong>Vendeur:</strong> <?php echo $produit['nom_membre']; ?>
+                                    </p>
+                                    
+                                    <form action="../inc/traitement_achat.php" method="POST" class="d-flex gap-2">
+                                        <input type="hidden" name="id_produit_membre" value="<?php echo $produit['id_produit_membre']; ?>">
+                                        <input type="number" name="quantite" class="form-control" min="1" max="<?php echo $produit['quantite_dispo']; ?>" value="1" required style="width: 80px;">
+                                        <button type="submit" class="btn btn-primary" <?php echo ($produit['quantite_dispo'] <= 0) ? 'disabled' : ''; ?>>
+                                            <i class="bi bi-cart"></i> Acheter
+                                        </button>
+                                    </form>
+                                    
+                                    <?php if ($produit['quantite_dispo'] <= 0) { ?>
+                                        <span class="text-danger">Rupture de stock</span>
+                                    <?php }?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } else { ?>
                 <p>Aucun produit disponible pour le moment.</p>
-            <?php endif; ?>
+            <?php } ?>
         </div>
     </div>
+    
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
