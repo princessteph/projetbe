@@ -46,13 +46,13 @@ $produits = produit_membres($etu);
                                 <div class="product-image-wrapper mb-3">
                                     <img src="../assets/img/default-food.svg?v=food-2" alt="Image du produit" class="product-image" onerror="this.style.display='none'; this.parentNode.classList.add('product-image-fallback');">
                                 </div>
-                                <h5 class="card-title"><?php echo htmlspecialchars($produit['nom_produit']); ?></h5>
+                                <h5 class="card-title"><?php echo $produit['nom_produit']; ?></h5>
                                 <p class="card-text">
-                                    <strong>Catégorie:</strong> <?php echo htmlspecialchars($produit['nom_categorie']); ?><br>
-                                    <strong>Prix unitaire:</strong> <?php echo number_format($produit['prix'], 2); ?> MGA<br>
+                                    <strong>Catégorie:</strong> <?php echo $produit['nom_categorie']; ?><br>
+                                    <strong>Prix unitaire:</strong> <?php echo $produit['prix']; ?> MGA<br>
                                     <strong>Quantité disponible:</strong> <span class="badge bg-success"><?php echo $produit['quantite_dispo']; ?></span><br>
-                                    <strong>Date de disponibilité:</strong> <?php echo htmlspecialchars($produit['date_dispo']); ?><br>
-                                    <strong>Vendeur:</strong> <?php echo htmlspecialchars($produit['nom_membre']); ?>
+                                    <strong>Date de disponibilité:</strong> <?php echo $produit['date_dispo']; ?><br>
+                                    <strong>Vendeur:</strong> <?php echo $produit['nom_membre']; ?>
                                 </p>
 
                                 <form action="../inc/traitement_achat.php" method="POST" class="d-flex gap-2">
