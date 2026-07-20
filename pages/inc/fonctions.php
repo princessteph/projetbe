@@ -86,7 +86,7 @@ function vente ($etu, $produit, $price, $quantite, $date_dispo, $image = 'defaul
     $quantite = mysqli_real_escape_string($connect, $quantite);
     $date_dispo = mysqli_real_escape_string($connect, $date_dispo);
     $image = mysqli_real_escape_string($connect, $image);
-    $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo, image_produit) 
+    $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo, image) 
             VALUES ((SELECT id_membre FROM membre WHERE numero_etu = '$etu'), (SELECT id_produit FROM produit WHERE id_produit = '$produit'), '$price', '$quantite', '$date_dispo', '$image')";
     return mysqli_query($connect, $sql);
 }
@@ -157,25 +157,46 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 function image_upload($prefix = 'membre') {
     ensure_image_columns();
     $image = 'default.png';
+    $GLOBALS['upload_debug'] = 'ok';
 
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0 && $_FILES['image']['size'] > 0) {
-        $extensions_ok = array('jpg', 'jpeg', 'png', 'gif', 'webp');
-        $nom_fichier = $_FILES['image']['name'];
-        $extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
+    if (!isset($_FILES['image'])) {
+        $GLOBALS['upload_debug'] = "aucun champ 'image' reçu dans \$_FILES (le formulaire a-t-il enctype=multipart/form-data ?)";
+        return $image;
+    }
+    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        $GLOBALS['upload_debug'] = "erreur PHP upload, code = " . $_FILES['image']['error'];
+        return $image;
+    }
+    if ($_FILES['image']['size'] <= 0) {
+        $GLOBALS['upload_debug'] = "taille du fichier reçu = 0 (aucun fichier sélectionné ?)";
+        return $image;
+    }
 
-        if (in_array($extension, $extensions_ok)) {
-            $prefix_name = ($prefix === 'produit') ? 'produit_' : 'membre_';
-            $nouveau_nom = $prefix_name . uniqid('', true) . '.' . $extension;
-            $dossier_destination = dirname(__DIR__) . '/assets/img/' . $nouveau_nom;
+    $extensions_ok = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+    $nom_fichier = $_FILES['image']['name'];
+    $extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
 
-            if (!is_dir(dirname($dossier_destination))) {
-                mkdir(dirname($dossier_destination), 0777, true);
-            }
+    if (!in_array($extension, $extensions_ok)) {
+        $GLOBALS['upload_debug'] = "extension refusée = '$extension' (fichier: $nom_fichier)";
+        return $image;
+    }
 
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier_destination)) {
-                $image = $nouveau_nom;
-            }
-        }
+    $prefix_name = ($prefix === 'produit') ? 'produit_' : 'membre_';
+    $nouveau_nom = $prefix_name . uniqid('', true) . '.' . $extension;
+    $dossier_destination = dirname(__DIR__) . '/assets/img/' . $nouveau_nom;
+
+    if (!is_dir(dirname($dossier_destination))) {
+        mkdir(dirname($dossier_destination), 0777, true);
+    }
+    if (!is_writable(dirname($dossier_destination))) {
+        $GLOBALS['upload_debug'] = "dossier non writable = " . dirname($dossier_destination);
+        return $image;
+    }
+
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier_destination)) {
+        $image = $nouveau_nom;
+    } else {
+        $GLOBALS['upload_debug'] = "move_uploaded_file a échoué vers $dossier_destination (tmp_name: " . $_FILES['image']['tmp_name'] . ")";
     }
 
     return $image;
