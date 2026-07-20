@@ -24,24 +24,20 @@ function get_one_line($sql){
     return $result;
 }
 
-function produit_membres($etu){
-    ensure_image_columns();
+function produit_membres(){
     $sql = "SELECT 
                 produit_membre.id_produit_membre,
                 produit.nom AS nom_produit,
                 produit_membre.prix_vente AS prix,
                 membre.nom AS nom_membre,
                 produit_membre.quantite_dispo,
-                produit_membre.date_dispo,
                 COALESCE(produit_membre.image_produit, 'default-food.svg') AS image_produit,
                 COALESCE(membre.image_profil, 'default-profile.svg') AS image_profil,
-                produit.id_categorie AS id_categorie,
                 categorie.nom_categorie
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre
             JOIN produit ON produit_membre.id_produit = produit.id_produit
-            JOIN categorie ON produit.id_categorie = categorie.id_categorie
-            WHERE membre.numero_etu != '$etu'";
+            JOIN categorie ON produit.id_categorie = categorie.id_categorie";
     $result = get_all_lines($sql);
     return $result;
 }
@@ -90,7 +86,7 @@ function vente ($etu, $produit, $price, $quantite, $date_dispo, $image = 'defaul
     $quantite = mysqli_real_escape_string($connect, $quantite);
     $date_dispo = mysqli_real_escape_string($connect, $date_dispo);
     $image = mysqli_real_escape_string($connect, $image);
-    $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo, image_produit) 
+    $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo, image) 
             VALUES ((SELECT id_membre FROM membre WHERE numero_etu = '$etu'), (SELECT id_produit FROM produit WHERE id_produit = '$produit'), '$price', '$quantite', '$date_dispo', '$image')";
     return mysqli_query($connect, $sql);
 }
@@ -161,25 +157,46 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 function image_upload($prefix = 'membre') {
     ensure_image_columns();
     $image = 'default.png';
+    $GLOBALS['upload_debug'] = 'ok';
 
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0 && $_FILES['image']['size'] > 0) {
-        $extensions_ok = array('jpg', 'jpeg', 'png', 'gif', 'webp');
-        $nom_fichier = $_FILES['image']['name'];
-        $extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
+    if (!isset($_FILES['image'])) {
+        $GLOBALS['upload_debug'] = "aucun champ 'image' reçu dans \$_FILES (le formulaire a-t-il enctype=multipart/form-data ?)";
+        return $image;
+    }
+    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        $GLOBALS['upload_debug'] = "erreur PHP upload, code = " . $_FILES['image']['error'];
+        return $image;
+    }
+    if ($_FILES['image']['size'] <= 0) {
+        $GLOBALS['upload_debug'] = "taille du fichier reçu = 0 (aucun fichier sélectionné ?)";
+        return $image;
+    }
 
-        if (in_array($extension, $extensions_ok)) {
-            $prefix_name = ($prefix === 'produit') ? 'produit_' : 'membre_';
-            $nouveau_nom = $prefix_name . uniqid('', true) . '.' . $extension;
-            $dossier_destination = dirname(__DIR__) . '/assets/img/' . $nouveau_nom;
+    $extensions_ok = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+    $nom_fichier = $_FILES['image']['name'];
+    $extension = strtolower(pathinfo($nom_fichier, PATHINFO_EXTENSION));
 
-            if (!is_dir(dirname($dossier_destination))) {
-                mkdir(dirname($dossier_destination), 0777, true);
-            }
+    if (!in_array($extension, $extensions_ok)) {
+        $GLOBALS['upload_debug'] = "extension refusée = '$extension' (fichier: $nom_fichier)";
+        return $image;
+    }
 
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier_destination)) {
-                $image = $nouveau_nom;
-            }
-        }
+    $prefix_name = ($prefix === 'produit') ? 'produit_' : 'membre_';
+    $nouveau_nom = $prefix_name . uniqid('', true) . '.' . $extension;
+    $dossier_destination = dirname(__DIR__) . '/assets/img/' . $nouveau_nom;
+
+    if (!is_dir(dirname($dossier_destination))) {
+        mkdir(dirname($dossier_destination), 0777, true);
+    }
+    if (!is_writable(dirname($dossier_destination))) {
+        $GLOBALS['upload_debug'] = "dossier non writable = " . dirname($dossier_destination);
+        return $image;
+    }
+
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier_destination)) {
+        $image = $nouveau_nom;
+    } else {
+        $GLOBALS['upload_debug'] = "move_uploaded_file a échoué vers $dossier_destination (tmp_name: " . $_FILES['image']['tmp_name'] . ")";
     }
 
     return $image;

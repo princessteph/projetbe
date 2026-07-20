@@ -28,6 +28,7 @@ $ventes = get_all_ventes($_SESSION['etu']);
                             <th scope="col">Prix</th>
                             <th scope="col">Quantité</th>
                             <th scope="col">Date</th>
+                            <th scope="col">Prix total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,6 +38,7 @@ $ventes = get_all_ventes($_SESSION['etu']);
                                 <td><?= $vente['prix']?> MGA</td>
                                 <td><?= $vente['quantite'] ?></td>
                                 <td><?= $vente['date'] ?></td>
+                                <td><?= number_format((float)$vente['prix'] * (int)$vente['quantite'], 2, ',', ' ') ?> MGA</td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

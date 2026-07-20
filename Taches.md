@@ -1,4 +1,4 @@
-[OK ETU004722] 
+[OKETU004722] 
 -base.sql
     a) creation des tables :
         -membre
@@ -12,7 +12,7 @@
         -15 produits à répartir sur plusieurs catégories
         -20 produits à vendre
 
-[ok ETU0047224722]login.php
+[okETU0047224722]login.php
     a) affichage
         -html
             input de type number
@@ -21,25 +21,26 @@
     b) code dynamique
         fonction verification
 
-[ok ETU004680]traitement_login.php
+[okETU004680]traitement_login.php
     a)fonction 
         -verifie etu
+        -upload
     b)code dynamique
         -si etu existe > acceuil.php
         -si etu !exixte> ins cription
 
 
-[ok ETU004680] inscription.php
+[okETU004680] inscription.php
     a) affichage
         -html
             input de type text
-            insertion image (pas obligatoire)
+            insertion image 
         -css/bootstrap
     b) code dynamique
         upload
         fonction inscription
 
-[ok ETU0047224722] accueil.php
+[okETU0047224722] accueil.php
     a) affichage
         -html
             image produit
@@ -51,16 +52,24 @@
         boucle
         fonction qui prend les produits
 
-traitement_achat.php
+[okETU0047224722] traitement_achat.php
     a)affichage
     b)code dynamique
         fonction achat
         fonction get produit
+        
 
-[ok ETU004680] vendre.php
+[okETU004680] vendre.php
     a) affichage
         -html
             select categorie
-            
 
-        
+[okETU004680] mes_ventes.php
+a)afichage 
+    vente total
+    vente effectue
+
+[okETU004680]traitement vente
+b)   fontion vente.       
+
+css [ETU004722]

@@ -94,21 +94,18 @@ $produits = $produitsFiltres;
                         <div class="card h-100">
                             <div class="card-body">
                                 <?php
-                                $imageProduit = !empty($produit['image_produit']) ? $produit['image_produit'] : 'default-food.svg';
+                                $imageProduit = !empty($produit['image']) ? $produit['image'] : 'default.png';
                                 $imageProduitChemin = '../assets/img/' . $imageProduit;
-                                if (!file_exists($imageProduitChemin) || $imageProduit === 'default-profile.svg' || $imageProduit === 'default.png') {
-                                    $imageProduit = 'default-food.svg';
-                                }
                                 ?>
                                 <div class="product-image-wrapper mb-3">
-                                    <img src="../assets/img/default-food.svg?v=food-2" alt="Image du produit" class="product-image" onerror="this.style.display='none'; this.parentNode.classList.add('product-image-fallback');">
+                                    <img src="<?php echo $imageProduitChemin; ?>" alt="<?php echo $produit['nom_produit']; ?>" class="product-image">
                                 </div>
                                 <h5 class="card-title"><?php echo $produit['nom_produit']; ?></h5>
                                 <p class="card-text">
-                                    <strong>Catégorie:</strong> <?php echo $produit['nom_categorie']; ?><br>
-                                    <strong>Prix unitaire:</strong> <?php echo $produit['prix']; ?> MGA<br>
-                                    <strong>Quantité disponible:</strong> <span class="badge bg-success"><?php echo $produit['quantite_dispo']; ?></span><br>
-                                    <strong>Date de disponibilité:</strong> <?php echo $produit['date_dispo']; ?><br>
+                                    <strong>Categorie:</strong> <?php echo $produit['nom_categorie']; ?><br>
+                                    <strong>Prix unitaire:</strong> <?php echo number_format($produit['prix'], 2); ?> MGA<br>
+                                    <strong>Quantite disponible:</strong> <span class="badge bg-success"><?php echo $produit['quantite_dispo']; ?></span><br>
+                                    <strong>Date de disponibilite:</strong> <?php echo $produit['date_dispo']; ?><br>
                                     <strong>Vendeur:</strong> <?php echo $produit['nom_membre']; ?>
                                 </p>
 
