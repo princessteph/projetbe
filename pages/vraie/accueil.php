@@ -10,31 +10,10 @@ if (!isset($_SESSION['etu'])) {
 $message = '';
 $type = 'info';
 
-if (isset($_GET['msg'])) {
-    switch ($_GET['msg']) {
-        case 'achat_ok':
-            $message = 'Achat reussi !';
-            $type = 'success';
-            break;
-        case 'stock_insuffisant':
-            $message = 'Stock insuffisant !';
-            $type = 'danger';
-            break;
-        case 'erreur_parametres':
-            $message = 'Erreur de parametres.';
-            $type = 'warning';
-            break;
-        case 'produit_introuvable':
-            $message = 'Produit introuvable.';
-            $type = 'danger';
-            break;
-        case 'quantite_invalide':
-            $message = 'Quantite invalide.';
-            $type = 'warning';
-            break;
-        default:
-            $message = '';
-    }
+if (isset($_SESSION['message'])) {
+    $type = $_SESSION['message']['type'];
+    $message = $_SESSION['message']['texte'];
+    unset($_SESSION['message']);
 }
 
 $etu = $_SESSION['etu'];
@@ -56,18 +35,19 @@ $produits = produit_membres($etu);
             <a href="deconnexion.php" class="btn btn-danger">Se deconnecter</a>
         </div>
 
-        <?php if ($message){ ?>
+        <?php if ($message != '') { ?>
             <div class="alert alert-<?php echo $type; ?> alert-dismissible fade show" role="alert">
                 <?php echo $message; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         <?php } ?>
 
+
         <div class="produits">
             <h2>Produits des autres membres</h2>
-            <?php if (!empty($produits)){ ?>
+            <?php if (!empty($produits)) { ?>
                 <div class="row">
-                    <?php foreach ($produits as $produit){ ?>
+                    <?php foreach ($produits as $produit) { ?>
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-body">
@@ -82,15 +62,15 @@ $produits = produit_membres($etu);
                                     
                                     <form action="../inc/traitement_achat.php" method="POST" class="d-flex gap-2">
                                         <input type="hidden" name="id_produit_membre" value="<?php echo $produit['id_produit_membre']; ?>">
-                                        <input type="number" name="quantite" class="form-control" min="1" max="<?php echo $produit['quantite_dispo']; ?>" value="1" required style="width: 80px;">
-                                        <button type="submit" class="btn btn-primary" <?php echo ($produit['quantite_dispo'] <= 0) ? 'disabled' : ''; ?>>
+                                        <input type="number" name="quantite" class="form-control" required style="width: 80px;">
+                                        <button type="submit" class="btn btn-primary" >
                                             <i class="bi bi-cart"></i> Acheter
                                         </button>
                                     </form>
                                     
                                     <?php if ($produit['quantite_dispo'] <= 0) { ?>
                                         <span class="text-danger">Rupture de stock</span>
-                                    <?php }?>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>

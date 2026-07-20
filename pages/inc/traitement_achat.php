@@ -7,8 +7,9 @@ if (!isset($_SESSION['etu'])) {
     exit();
 }
 
-if (!isset($_POST['id_produit_membre']) || !isset($_POST['quantite'])) {
-    header('Location: ../vraie/accueil.php?msg=erreur_parametres');
+if (!isset($_POST['id_produit_membre']) || $_POST['id_produit_membre'] == '' || !isset($_POST['quantite'])) {
+    $_SESSION['message'] = array('type' => 'warning', 'texte' => 'Erreur de parametres.');
+    header('Location: ../vraie/accueil.php');
     exit();
 }
 
@@ -17,9 +18,7 @@ $quantite = (int)$_POST['quantite'];
 
 $resultat = acheter_produit($id_produit_membre, $quantite);
 
-if ($resultat['success']) {
-    header('Location: ../vraie/accueil.php?msg=achat_ok');
-} else {
-    header('Location: ../vraie/accueil.php?msg=stock_insuffisant');
-}
+$_SESSION['message'] = $resultat;
+
+header('Location: ../vraie/accueil.php');
 exit();

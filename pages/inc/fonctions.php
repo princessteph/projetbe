@@ -26,6 +26,7 @@ function get_one_line($sql){
 
 function produit_membres($etu){
     $sql = "SELECT 
+                produit_membre.id_produit_membre,
                 produit.nom AS nom_produit,
                 produit_membre.prix_vente AS prix,
                 membre.nom AS nom_membre,
@@ -84,36 +85,36 @@ function get_produit_membre($id_produit_membre) {
 
 function acheter_produit($id_produit_membre, $quantite_achetee) {
     $connect = dbconnect();
-    
+
     $produit = get_produit_membre($id_produit_membre);
-    
+
     if (!$produit) {
-        return ['success' => false, 'message' => 'Produit introuvable'];
+        return array('type' => 'danger', 'texte' => 'Produit introuvable.');
     }
-    
-    if ($produit['quantite_dispo'] < $quantite_achetee) {
-        return ['success' => false, 'message' => 'Quantite insuffisante. Disponible : ' . $produit['quantite_dispo']];
-    }
-    
+
     if ($quantite_achetee <= 0) {
-        return ['success' => false, 'message' => 'Quantite invalide'];
+        return array('type' => 'warning', 'texte' => 'Quantite invalide.');
     }
-    
+
+    if ($produit['quantite_dispo'] < $quantite_achetee) {
+        return array('type' => 'danger', 'texte' => 'Stock insuffisant. Il reste ' . $produit['quantite_dispo'] . ' unite(s).');
+    }
+
     $nouvelle_quantite = $produit['quantite_dispo'] - $quantite_achetee;
     $sql_update = "UPDATE produit_membre SET quantite_dispo = '$nouvelle_quantite' WHERE id_produit_membre = '$id_produit_membre'";
-    
+
     if (!mysqli_query($connect, $sql_update)) {
-        return ['success' => false, 'message' => 'Erreur lors de la mise a jour'];
+        return array('type' => 'danger', 'texte' => 'Erreur lors de la mise a jour du stock.');
     }
-    
+
     $date = date('Y-m-d');
     $heure = date('H:i:s');
     $sql_vente = "INSERT INTO vente (date, heure, id_produit_membre, quantite) 
                   VALUES ('$date', '$heure', '$id_produit_membre', '$quantite_achetee')";
-    
+
     if (!mysqli_query($connect, $sql_vente)) {
-        return ['success' => false, 'message' => 'Erreur lors de l\'enregistrement de la vente'];
+        return array('type' => 'danger', 'texte' => 'Erreur lors de l enregistrement de la vente.');
     }
-    
-    return ['success' => true, 'message' => 'Achat reussi !'];
+
+    return array('type' => 'success', 'texte' => 'Achat reussi !');
 }
