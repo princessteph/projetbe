@@ -11,7 +11,7 @@
     <div class="container">
         <div class="login">
             <h1>Connectez-vous</h1>
-            <form action="traitement_login.php" method="POST">
+            <form action="../inc/traitement_login.php" method="POST">
                 <div class="mb-3">
                     <label for="etu" class="form-label">ETU</label>
                     <input type="text" class="form-control" id="etu" name="etu" required>
