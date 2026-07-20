@@ -24,3 +24,17 @@ function get_one_line($sql){
     mysqli_free_result($req);
     return $result;
 }
+
+function check ($etu){
+    $sql = "SELECT * FROM membre WHERE numero_etu = '$etu'";
+    if (get_one_line($sql)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function inscription ($etu, $name, $image){
+    $sql = "INSERT INTO membre (numero_etu, nom, image_profil) VALUES ('$etu', '$name', '$image')";
+    return mysqli_query(dbconnect(),$sql);
+}
