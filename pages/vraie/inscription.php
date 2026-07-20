@@ -1,28 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/bootstrap/font/bootstrap-icons.css">
-    <title>Inscription</title>
-</head>
-<body>
-    <div class="container">
-        <div class="login">
-            <h1>Inscrivez-vous</h1>
-            <form action="../inc/traitement_inscription.php" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Nom</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+<?php
+$pageTitle = 'Inscription';
+include('../inc/header.php');
+?>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="h3 mb-3">Inscrivez-vous</h1>
+                    <form action="../inc/traitement_inscription.php" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">S'inscrire</button>
+                        <a href="login.php" class="btn btn-outline-secondary ms-2">Retour</a>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="image" class="form-label">Photo de profil (optionnel)</label>
-                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                </div>
-                <button type="submit" class="btn btn-primary">S'inscrire</button>
-            </form>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<?php include('../inc/footer.php'); ?>
