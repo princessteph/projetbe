@@ -16,7 +16,10 @@ $produits = get_all_produit();
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h1 class="h3 mb-3">Vendre un produit</h1>
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <h1 class="h3 mb-0">Vendre un produit</h1>
+                        <a href="accueil.php" class="btn btn-outline-secondary btn-sm">Retour</a>
+                    </div>
                     <form action="../inc/traitement_vente.php" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="produit" class="form-label">Produit</label>
@@ -43,7 +46,6 @@ $produits = get_all_produit();
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
                         </div>
                         <button type="submit" class="btn btn-primary">Vendre</button>
-                        <a href="accueil.php" class="btn btn-outline-secondary ms-2">Retour</a>
                     </form>
                 </div>
             </div>

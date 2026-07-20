@@ -31,8 +31,8 @@ function produit_membres(){
                 produit_membre.prix_vente AS prix,
                 membre.nom AS nom_membre,
                 produit_membre.quantite_dispo,
-                produit_membre.date_dispo,
-                produit_membre.image,
+                COALESCE(produit_membre.image_produit, 'default-food.svg') AS image_produit,
+                COALESCE(membre.image_profil, 'default-profile.svg') AS image_profil,
                 categorie.nom_categorie
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre
@@ -198,4 +198,23 @@ function image_upload($prefix = 'membre') {
     }
 
     return $image;
+}
+
+function ajout_produit($nom, $categorie, $price) {
+    $connect = dbconnect();
+    $nom = mysqli_real_escape_string($connect, $nom);
+    $categorie = mysqli_real_escape_string($connect, $categorie);
+    $price = mysqli_real_escape_string($connect, $price);
+    $sql = "INSERT INTO produit (nom, id_categorie, prix_reference) VALUES ('$nom', '$categorie', '$price')";
+    return mysqli_query($connect, $sql);
+}
+
+function get_produit($id_produit) {
+    $sql = "SELECT * FROM produit WHERE id_produit = '$id_produit'";
+    return get_one_line($sql);
+}
+
+function modifier_produit($id_produit, $nom, $categorie, $price, $perime) {
+    $sql = "UPDATE produit SET nom = '$nom', id_categorie = '$categorie', prix_reference = '$price', perime = '$perime' WHERE id_produit = '$id_produit'";
+    return mysqli_query($connect, $sql);
 }
