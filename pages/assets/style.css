@@ -1,0 +1,99 @@
+:root {
+    --bg: #fffaf4;
+    --surface: #ffffff;
+    --text: #2d241b;
+    --muted: #7a6652;
+    --primary: #d97706;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --border: #f3e1c9;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background: linear-gradient(135deg, #fffaf4 0%, #fff3e0 100%);
+}
+
+.site-header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(146, 83, 20, 0.06);
+}
+
+.site-brand {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.site-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+}
+
+.site-main {
+    padding: 2rem 0 3rem;
+}
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(146, 83, 20, 0.08);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.btn {
+    border-radius: 999px;
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-outline-success {
+    color: #15803d;
+    border-color: #15803d;
+}
+
+.btn-outline-danger {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.table {
+    background: var(--surface);
+}
+
+.table thead th {
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.alert {
+    border: none;
+    border-radius: 12px;
+}
+
+.container {
+    max-width: 1100px;
+}
+
+h1, h2, h3, h4 {
+    color: var(--text);
+}

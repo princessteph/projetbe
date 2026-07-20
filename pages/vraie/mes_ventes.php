@@ -15,7 +15,6 @@ $ventes = get_all_ventes($_SESSION['etu']);
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h1 class="h3 mb-0">Mes ventes</h1>
-        <a href="accueil.php" class="btn btn-outline-secondary">Retour à l'accueil</a>
     </div>
 
     <div class="card shadow-sm">

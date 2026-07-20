@@ -10,12 +10,16 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/bootstrap/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/style.css">
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) : 'Projet BE'; ?></title>
 </head>
 <body>
-<header class="border-bottom bg-light py-3">
+<header class="site-header">
     <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <a href="accueil.php" class="text-decoration-none fw-bold text-dark">Projet BE</a>
+        <div class="d-flex align-items-center gap-2">
+            <img src="../assets/img/food-icon.svg" alt="Icône nourriture" class="site-icon">
+            <a href="accueil.php" class="site-brand">IT'mikaly</a>
+        </div>
         <nav class="d-flex flex-wrap gap-2">
             <?php if (!empty($_SESSION['etu'])): ?>
                 <a href="accueil.php" class="btn btn-outline-primary btn-sm">Accueil</a>
@@ -27,4 +31,4 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
 </header>
 
-<main class="py-4">
+<main class="site-main">
