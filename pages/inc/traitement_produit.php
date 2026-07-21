@@ -15,7 +15,8 @@ if (!isset($_POST['nom'], $_POST['categorie'], $_POST['price'])) {
 
 $perime = isset($_POST['perime']) ? 1 : 0; 
 
-ajout_produit($_POST['nom'], $_POST['categorie'], $_POST['price'], $perime); 
+$image = image_upload('produit');
+ajout_produit($_POST['nom'], $_POST['categorie'], $_POST['price'], $perime, $image); 
 
 $_SESSION['message'] = array('type' => 'success', 'texte' => 'Produit ajoute avec succes.');
 header('Location: ../vraie/accueil.php');

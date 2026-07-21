@@ -20,7 +20,7 @@ $categories = all_categories();
                         <h1 class="h3 mb-0">Ajouter un produit</h1>
                         <a href="accueil.php" class="btn btn-outline-secondary btn-sm">Retour</a>
                     </div>
-                    <form action="../inc/traitement_produit.php" method="POST">
+                    <form action="../inc/traitement_produit.php" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="nom" class="form-label">Nom du produit</label>
                             <input type="text" class="form-control" id="nom" name="nom" required>
@@ -36,6 +36,10 @@ $categories = all_categories();
                         <div class="mb-3">
                             <label for="price" class="form-label">Prix de reference</label>
                             <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Photo du produit (facultatif)</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="perime" name="perime" value="1">

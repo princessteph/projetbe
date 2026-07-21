@@ -22,7 +22,7 @@ $categories = all_categories();
                         <h1 class="h3 mb-0">Modifier un produit</h1>
                         <a href="accueil.php" class="btn btn-outline-secondary btn-sm">Retour</a>
                     </div>
-                    <form action="../inc/modification.php" method="POST">
+                    <form action="../inc/modification.php" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id_produit" value="<?= $produit['id_produit'] ?>">
                         <div class="mb-3">
                             <label for="nom" class="form-label">Nom du produit</label>
@@ -39,6 +39,16 @@ $categories = all_categories();
                         <div class="mb-3">
                             <label for="prix" class="form-label">Prix de référence</label>
                             <input type="number" class="form-control" id="prix" name="prix" value="<?= $produit['prix_reference']; ?>" step="0.01" required>
+                        </div>
+                        <?php if (!empty($produit['image'])) { ?>
+                            <div class="mb-3">
+                                <label class="form-label">Image actuelle</label><br>
+                                <img src="../assets/img/<?= htmlspecialchars($produit['image']) ?>" alt="Image actuelle" class="img-thumbnail" style="max-width: 180px;">
+                            </div>
+                        <?php } ?>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Nouvelle image du produit (facultatif)</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="perime" name="perime" value="1" <?= (!empty($produit['perime']) && $produit['perime'] == 1) ? 'checked' : '' ?>>

@@ -19,6 +19,7 @@ CREATE TABLE produit (
     nom VARCHAR(255),
     id_categorie INT,
     prix_reference DECIMAL(10, 2),
+    image VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (id_categorie) REFERENCES categorie(id_categorie)
 );
 

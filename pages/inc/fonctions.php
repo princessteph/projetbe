@@ -2,6 +2,7 @@
 include_once 'dbconnect.php';
 
 function get_all_lines($sql){
+    ensure_image_columns();
     $req = mysqli_query(dbconnect(), $sql);
     if (!$req) {
         die('Erreur SQL : ' . mysqli_error(dbconnect()));
@@ -15,6 +16,7 @@ function get_all_lines($sql){
 }
 
 function get_one_line($sql){
+    ensure_image_columns();
     $req = mysqli_query(dbconnect(), $sql);
     if (!$req) {
         die('Erreur SQL : ' . mysqli_error(dbconnect()));
@@ -75,7 +77,8 @@ function check($etu){
 function ensure_image_columns(){
     $connect = dbconnect();
     mysqli_query($connect, "ALTER TABLE membre ADD COLUMN IF NOT EXISTS image_profil VARCHAR(255) DEFAULT 'default.png'");
-    mysqli_query($connect, "ALTER TABLE produit_membre ADD COLUMN IF NOT EXISTS image_produit VARCHAR(255) DEFAULT 'default.png'");
+    mysqli_query($connect, "ALTER TABLE produit ADD COLUMN IF NOT EXISTS image VARCHAR(255) DEFAULT NULL");
+    mysqli_query($connect, "ALTER TABLE produit_membre ADD COLUMN IF NOT EXISTS image VARCHAR(255) DEFAULT NULL");
 }
 
 function inscription($etu, $name, $image){
@@ -315,27 +318,52 @@ function image_upload($prefix = 'membre') {
     }
 }
 
-function ajout_produit($nom, $id_categorie, $prix_reference, $perime = 0) {
+function ajout_produit($nom, $id_categorie, $prix_reference, $perime = 0, $image = null) {
+    ensure_image_columns();
     $connect = dbconnect();
     $nom = mysqli_real_escape_string($connect, $nom);
     $id_categorie = (int)$id_categorie;
     $prix_reference = (float)$prix_reference;
     $perime = $perime ? 1 : 0;
-    
-    $sql = "INSERT INTO produit (nom, id_categorie, prix_reference, perime) VALUES ('$nom', '$id_categorie', '$prix_reference', '$perime')";
+
+    if (!empty($image)) {
+        $image = mysqli_real_escape_string($connect, $image);
+        $sql = "INSERT INTO produit (nom, id_categorie, prix_reference, perime, image) VALUES ('$nom', '$id_categorie', '$prix_reference', '$perime', '$image')";
+    } else {
+        $sql = "INSERT INTO produit (nom, id_categorie, prix_reference, perime) VALUES ('$nom', '$id_categorie', '$prix_reference', '$perime')";
+    }
+
     return mysqli_query($connect, $sql);
 }
 
-function modifier_produit($id_produit, $nom, $id_categorie, $prix_reference, $perime = 0) {
+function modifier_produit($id_produit, $nom, $id_categorie, $prix_reference, $perime = 0, $image = null) {
+    ensure_image_columns();
     $connect = dbconnect();
     $id_produit = (int)$id_produit;
     $nom = mysqli_real_escape_string($connect, $nom);
     $id_categorie = (int)$id_categorie;
     $prix_reference = (float)$prix_reference;
     $perime = $perime ? 1 : 0;
-    
-    $sql = "UPDATE produit SET nom = '$nom', id_categorie = '$id_categorie', prix_reference = '$prix_reference', perime = '$perime' WHERE id_produit = '$id_produit'";
-    return mysqli_query($connect, $sql);
+
+    $sql = "UPDATE produit SET nom = '$nom', id_categorie = '$id_categorie', prix_reference = '$prix_reference', perime = '$perime'";
+
+    if (!empty($image)) {
+        $image = mysqli_real_escape_string($connect, $image);
+        $sql .= ", image = '$image'";
+    }
+
+    $sql .= " WHERE id_produit = '$id_produit'";
+
+    if (!mysqli_query($connect, $sql)) {
+        return false;
+    }
+
+    if (!empty($image)) {
+        $update_image_sales = "UPDATE produit_membre SET image = '$image' WHERE id_produit = '$id_produit'";
+        mysqli_query($connect, $update_image_sales);
+    }
+
+    return true;
 }
 
 function get_categorie_by_id($id_categorie) {
