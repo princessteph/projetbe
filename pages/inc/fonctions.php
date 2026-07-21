@@ -34,7 +34,7 @@ function produit_membres($id_categorie = null, $id_produit = null){
                 produit_membre.quantite_dispo,
                 produit_membre.date_dispo,
                 produit_membre.image,
-                categorie.id_categorie,
+                categorie.id_categorie as id_categorie,
                 categorie.nom_categorie,
                 produit.perime 
             FROM produit_membre
@@ -98,17 +98,46 @@ function get_all_produit(){
     return get_all_lines($sql);
 }
 
-function vente ($etu, $produit, $price, $quantite, $date_dispo, $image = 'default.png'){
+function vente ($etu, $produit, $price, $quantite, $date_dispo, $image = ''){
     ensure_image_columns();
     $connect = dbconnect();
     $etu = mysqli_real_escape_string($connect, $etu);
-    $produit = mysqli_real_escape_string($connect, $produit);
+    $id_produit = (int)$produit;
     $price = mysqli_real_escape_string($connect, $price);
     $quantite = mysqli_real_escape_string($connect, $quantite);
     $date_dispo = mysqli_real_escape_string($connect, $date_dispo);
+
+    if (empty($image)) {
+        $info_produit = get_produit($id_produit);
+        if ($info_produit) {
+            $id_cat = (int)$info_produit['id_categorie'];
+            if ($id_cat == 1) {
+                $image = 'plat_default.jpg'; 
+            } elseif ($id_cat == 2) {
+                $image = 'boisson_default.jpg';
+            } elseif ($id_cat == 3) {
+                $image = 'snak_default.jpg';
+            } elseif ($id_cat == 4) {
+                $image = 'dessert_default.jpg';
+            } else {
+                $image = 'default.png';
+            }
+        } else {
+            $image = 'default.png';
+        }
+    }
+
     $image = mysqli_real_escape_string($connect, $image);
     $sql = "INSERT INTO produit_membre (id_membre, id_produit, prix_vente, quantite_dispo, date_dispo, image) 
-            VALUES ((SELECT id_membre FROM membre WHERE numero_etu = '$etu'), (SELECT id_produit FROM produit WHERE id_produit = '$produit'), '$price', '$quantite', '$date_dispo', '$image')";
+            VALUES (
+                (SELECT id_membre FROM membre WHERE numero_etu = '$etu'), 
+                '$id_produit', 
+                '$price', 
+                '$quantite', 
+                '$date_dispo', 
+                '$image'
+            )";
+            
     return mysqli_query($connect, $sql);
 }
 
@@ -231,7 +260,7 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 }
 
 function image_upload($prefix = 'membre') {
-    $image_par_defaut = ' ';
+    $image_par_defaut = '';
 
     if (!isset($_FILES['image'])) {
         return $image_par_defaut;
