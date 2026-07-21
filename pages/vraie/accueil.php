@@ -74,7 +74,7 @@ $produits = produit_membres($id_categorie, $id_produit);
                         <div class="card h-100">
                             <div class="card-body">
                                 <?php
-                                $imageProduit = !empty($produit['image']) ? $produit['image'] : 'default.png';
+                                $imageProduit = !empty($produit['image']) ? $produit['image'] : $imageDefaut;
                                 $imageProduitChemin = '../assets/img/' . $imageProduit;
                                 ?>
                                 <div class="product-image-wrapper mb-3" style="position: relative;">
