@@ -36,7 +36,7 @@ function produit_membres($id_categorie = null, $id_produit = null){
                 produit_membre.image,
                 categorie.id_categorie,
                 categorie.nom_categorie,
-                produit.perime    
+                produit.perime 
             FROM produit_membre
             JOIN membre ON produit_membre.id_membre = membre.id_membre
             JOIN produit ON produit_membre.id_produit = produit.id_produit
@@ -233,32 +233,27 @@ function acheter_produit($id_produit_membre, $quantite_achetee) {
 function image_upload($prefix = 'membre') {
     $image_par_defaut = ' ';
 
-    // 1. Vérifie si le fichier a été soumis
     if (!isset($_FILES['image'])) {
         return $image_par_defaut;
     }
 
     $file = $_FILES['image'];
 
-    // 2. Si aucun fichier n'a été sélectionné (champ laissé vide car facultatif)
     if ($file['error'] === UPLOAD_ERR_NO_FILE) {
         return $image_par_defaut;
     }
 
-    // 3. Vérifie s'il y a une erreur d'upload native
     if ($file['error'] !== UPLOAD_ERR_OK) {
         echo "Erreur lors de l'upload : " . $file['error'];
         exit();
     }
 
-    // 4. Vérifie la taille (2 Mo)
     $maxSize = 2 * 1024 * 1024; 
     if ($file['size'] > $maxSize) {
         echo "Le fichier est trop volumineux (2 Mo maximum).";
         exit();
     }
 
-    // 5. Vérifie le type MIME réel avec finfo
     $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (function_exists('finfo_open')) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -271,23 +266,18 @@ function image_upload($prefix = 'membre') {
         }
     }
 
-    // 6. Nettoyage et renommage sécurisé du fichier
     $originalName = pathinfo($file['name'], PATHINFO_FILENAME);
     $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
     
-    // On nettoie le nom pour éviter les caractères bizarres
     $originalName = preg_replace('/[^a-zA-Z0-9_-]/', '', $originalName);
     $newName = $prefix . '_' . $originalName . '_' . uniqid() . '.' . $extension;
 
-    // 7. Définition du dossier cible (Le chemin relatif basé sur l'emplacement de fonctions.php)
     $uploadDir = __DIR__ . '/../assets/img/';
     
-    // Si le dossier n'existe pas, on le crée
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
-    // 8. Déplacement final du fichier
     if (move_uploaded_file($file['tmp_name'], $uploadDir . $newName)) {
         return $newName;
     } else {
