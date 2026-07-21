@@ -98,7 +98,7 @@ function get_all_produit(){
     return get_all_lines($sql);
 }
 
-function vente ($etu, $produit, $price, $quantite, $date_dispo, $image = 'default.png'){
+function vente ($etu, $produit, $price, $quantite, $date_dispo, $image){
     ensure_image_columns();
     $connect = dbconnect();
     $etu = mysqli_real_escape_string($connect, $etu);
@@ -307,4 +307,10 @@ function modifier_produit($id_produit, $nom, $id_categorie, $prix_reference, $pe
     
     $sql = "UPDATE produit SET nom = '$nom', id_categorie = '$id_categorie', prix_reference = '$prix_reference', perime = '$perime' WHERE id_produit = '$id_produit'";
     return mysqli_query($connect, $sql);
+}
+
+function get_categorie_by_id($id_categorie) {
+    $id_categorie = (int)$id_categorie;
+    $sql = "SELECT * FROM categorie WHERE id_categorie = '$id_categorie'";
+    return get_one_line($sql);
 }
